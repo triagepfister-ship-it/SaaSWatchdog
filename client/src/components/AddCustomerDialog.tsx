@@ -32,6 +32,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
     site: "",
     opportunityName: "",
     renewalAmount: "",
+    renewalExpirationDate: "",
     responsibleSalesperson: "",
     churn: false,
     churnReason: "",
@@ -46,7 +47,11 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const validatedData = insertCustomerSchema.parse(data);
+      const dataToSend = {
+        ...data,
+        renewalExpirationDate: data.renewalExpirationDate ? new Date(data.renewalExpirationDate) : null,
+      };
+      const validatedData = insertCustomerSchema.parse(dataToSend);
       const res = await apiRequest("POST", "/api/customers", validatedData);
       return await res.json();
     },
@@ -57,7 +62,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
+      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -167,6 +172,16 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
               onChange={(e) => setFormData({ ...formData, renewalAmount: e.target.value })}
               placeholder="10000.00"
               data-testid="input-renewal-amount"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="renewalExpirationDate">Renewal Expiration Date</Label>
+            <Input
+              id="renewalExpirationDate"
+              type="date"
+              value={formData.renewalExpirationDate}
+              onChange={(e) => setFormData({ ...formData, renewalExpirationDate: e.target.value })}
+              data-testid="input-renewal-expiration-date"
             />
           </div>
           <div className="space-y-2">
