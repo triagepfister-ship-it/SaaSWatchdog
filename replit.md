@@ -37,7 +37,7 @@ shared/
 
 ### Authentication Flow
 1. Users must login at `/auth` before accessing the app (no registration - hardcoded users only)
-2. Three hardcoded users available: Anvesh, Stephen, Calvin (all passwords: "viewpoint")
+2. Four hardcoded users available: Anvesh, Stephen, Calvin, Brian (all passwords: "viewpoint")
 3. Session-based authentication using express-session with in-memory store
 4. All API routes are protected and require authentication
 5. Protected routes automatically redirect to `/auth` if not authenticated
@@ -69,6 +69,7 @@ shared/
 - Customer form updated: Removed "Account Manager" field
 - Customer schema updated: Replaced accountManager field with site field
 - Customer form updated: Changed "Software" from dropdown to read-only display field
+- Authentication updated: Added fourth hardcoded user "Brian" with password "viewpoint"
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
