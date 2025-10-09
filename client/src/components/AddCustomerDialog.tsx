@@ -14,7 +14,8 @@ import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { insertCustomerSchema } from "@shared/schema";
+import { insertCustomerSchema, SOFTWARE_TYPES } from "@shared/schema";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function AddCustomerDialog() {
   const [open, setOpen] = useState(false);
@@ -23,6 +24,7 @@ export function AddCustomerDialog() {
     name: "",
     email: "",
     company: "",
+    software: "",
     accountManager: "",
     opportunityName: "",
     renewalAmount: "",
@@ -44,7 +46,7 @@ export function AddCustomerDialog() {
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
+      setFormData({ name: "", email: "", company: "", software: "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -106,6 +108,25 @@ export function AddCustomerDialog() {
               required
               data-testid="input-customer-company"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="software">Software</Label>
+            <Select
+              value={formData.software}
+              onValueChange={(value) => setFormData({ ...formData, software: value })}
+              required
+            >
+              <SelectTrigger id="software" data-testid="select-software">
+                <SelectValue placeholder="Select software" />
+              </SelectTrigger>
+              <SelectContent>
+                {SOFTWARE_TYPES.map((software) => (
+                  <SelectItem key={software} value={software}>
+                    {software}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="accountManager">Account Manager</Label>

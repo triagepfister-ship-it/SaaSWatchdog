@@ -12,7 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Customer } from "@shared/schema";
+import { Customer, SOFTWARE_TYPES } from "@shared/schema";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface EditCustomerDialogProps {
   customer: Customer;
@@ -26,6 +27,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     name: customer.name,
     email: customer.email,
     company: customer.company,
+    software: customer.software,
     accountManager: customer.accountManager || "",
     opportunityName: customer.opportunityName || "",
     renewalAmount: customer.renewalAmount || "",
@@ -39,6 +41,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       name: customer.name,
       email: customer.email,
       company: customer.company,
+      software: customer.software,
       accountManager: customer.accountManager || "",
       opportunityName: customer.opportunityName || "",
       renewalAmount: customer.renewalAmount || "",
@@ -112,6 +115,25 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
               required
               data-testid="input-edit-customer-company"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-software">Software</Label>
+            <Select
+              value={formData.software}
+              onValueChange={(value) => setFormData({ ...formData, software: value })}
+              required
+            >
+              <SelectTrigger id="edit-software" data-testid="select-edit-software">
+                <SelectValue placeholder="Select software" />
+              </SelectTrigger>
+              <SelectContent>
+                {SOFTWARE_TYPES.map((software) => (
+                  <SelectItem key={software} value={software}>
+                    {software}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-accountManager">Account Manager</Label>
