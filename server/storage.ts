@@ -76,12 +76,12 @@ export class MemStorage implements IStorage {
     const customer: Customer = { 
       ...insertCustomer, 
       id,
-      accountManager: insertCustomer.accountManager ?? null,
-      opportunityName: insertCustomer.opportunityName ?? null,
-      renewalAmount: insertCustomer.renewalAmount ?? null,
-      responsibleSalesperson: insertCustomer.responsibleSalesperson ?? null,
+      accountManager: insertCustomer.accountManager && insertCustomer.accountManager.trim() !== "" ? insertCustomer.accountManager : null,
+      opportunityName: insertCustomer.opportunityName && insertCustomer.opportunityName.trim() !== "" ? insertCustomer.opportunityName : null,
+      renewalAmount: (insertCustomer.renewalAmount !== undefined && insertCustomer.renewalAmount !== null && insertCustomer.renewalAmount.toString().trim() !== "") ? insertCustomer.renewalAmount : null,
+      responsibleSalesperson: insertCustomer.responsibleSalesperson && insertCustomer.responsibleSalesperson.trim() !== "" ? insertCustomer.responsibleSalesperson : null,
       churn: insertCustomer.churn ?? false,
-      churnReason: insertCustomer.churnReason ?? null,
+      churnReason: insertCustomer.churnReason && insertCustomer.churnReason.trim() !== "" ? insertCustomer.churnReason : null,
       status: insertCustomer.status ?? "active"
     };
     this.customers.set(id, customer);
@@ -96,12 +96,12 @@ export class MemStorage implements IStorage {
       ...existing,
       ...updates,
       id,
-      accountManager: updates.accountManager !== undefined ? (updates.accountManager || null) : existing.accountManager,
-      opportunityName: updates.opportunityName !== undefined ? (updates.opportunityName || null) : existing.opportunityName,
-      renewalAmount: updates.renewalAmount !== undefined ? (updates.renewalAmount || null) : existing.renewalAmount,
-      responsibleSalesperson: updates.responsibleSalesperson !== undefined ? (updates.responsibleSalesperson || null) : existing.responsibleSalesperson,
+      accountManager: updates.accountManager !== undefined ? (updates.accountManager && updates.accountManager.trim() !== "" ? updates.accountManager : null) : existing.accountManager,
+      opportunityName: updates.opportunityName !== undefined ? (updates.opportunityName && updates.opportunityName.trim() !== "" ? updates.opportunityName : null) : existing.opportunityName,
+      renewalAmount: updates.renewalAmount !== undefined ? (updates.renewalAmount !== null && updates.renewalAmount.toString().trim() !== "" ? updates.renewalAmount : null) : existing.renewalAmount,
+      responsibleSalesperson: updates.responsibleSalesperson !== undefined ? (updates.responsibleSalesperson && updates.responsibleSalesperson.trim() !== "" ? updates.responsibleSalesperson : null) : existing.responsibleSalesperson,
       churn: updates.churn !== undefined ? updates.churn : existing.churn,
-      churnReason: updates.churnReason !== undefined ? (updates.churnReason || null) : existing.churnReason,
+      churnReason: updates.churnReason !== undefined ? (updates.churnReason && updates.churnReason.trim() !== "" ? updates.churnReason : null) : existing.churnReason,
     };
     this.customers.set(id, updated);
     return updated;

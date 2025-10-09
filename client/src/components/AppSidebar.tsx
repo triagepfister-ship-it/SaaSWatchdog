@@ -5,6 +5,7 @@ import {
   Calendar,
   Bell,
   Settings,
+  AlertCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,6 +22,7 @@ import {
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Customers", url: "/customers", icon: Users },
+  { title: "Churn", url: "/churn", icon: AlertCircle },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Notifications", url: "/notifications", icon: Bell },
   { title: "Settings", url: "/settings", icon: Settings },

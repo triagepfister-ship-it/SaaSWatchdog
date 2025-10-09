@@ -11,6 +11,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import Dashboard from "@/pages/Dashboard";
 import Customers from "@/pages/Customers";
+import Churn from "@/pages/Churn";
 import CalendarView from "@/pages/CalendarView";
 import Notifications from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
@@ -54,6 +55,7 @@ function AuthenticatedApp() {
             <Switch>
               <ProtectedRoute path="/" component={Dashboard} />
               <ProtectedRoute path="/customers" component={Customers} />
+              <ProtectedRoute path="/churn" component={Churn} />
               <ProtectedRoute path="/calendar" component={CalendarView} />
               <ProtectedRoute path="/notifications" component={Notifications} />
               <ProtectedRoute path="/settings" component={Settings} />
