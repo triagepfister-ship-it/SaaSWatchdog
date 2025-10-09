@@ -3,21 +3,18 @@ import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
-
-//todo: remove mock functionality
-const mockCustomers = [
-  { id: "1", name: "John Doe", email: "john@acmecorp.com", company: "Acme Corp", status: "active" as const, totalValue: "$50,000", subscriptions: 3 },
-  { id: "2", name: "Sarah Smith", email: "sarah@techstart.com", company: "TechStart Inc", status: "active" as const, totalValue: "$25,000", subscriptions: 2 },
-  { id: "3", name: "Michael Brown", email: "michael@global.com", company: "Global Solutions", status: "active" as const, totalValue: "$75,000", subscriptions: 5 },
-  { id: "4", name: "Emily Johnson", email: "emily@startupxyz.com", company: "StartupXYZ", status: "active" as const, totalValue: "$12,000", subscriptions: 1 },
-  { id: "5", name: "David Wilson", email: "david@megacorp.com", company: "MegaCorp Ltd", status: "inactive" as const, totalValue: "$100,000", subscriptions: 4 },
-  { id: "6", name: "Lisa Anderson", email: "lisa@innovate.com", company: "Innovation Labs", status: "active" as const, totalValue: "$35,000", subscriptions: 2 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { Customer } from "@shared/schema";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Customers() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredCustomers = mockCustomers.filter((customer) =>
+  const { data: customers = [], isLoading } = useQuery<Customer[]>({
+    queryKey: ["/api/customers"],
+  });
+
+  const filteredCustomers = customers.filter((customer) =>
     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     customer.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
     customer.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -44,11 +41,23 @@ export default function Customers() {
         />
       </div>
 
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {filteredCustomers.map((customer) => (
-          <CustomerCard key={customer.id} {...customer} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="text-center py-12 text-muted-foreground">Loading customers...</div>
+      ) : filteredCustomers.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-muted-foreground">
+              {searchQuery ? "No customers found matching your search." : "No customers yet. Add your first customer to get started."}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {filteredCustomers.map((customer) => (
+            <CustomerCard key={customer.id} customer={customer} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

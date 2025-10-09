@@ -1,10 +1,21 @@
-import { type Customer, type InsertCustomer, type Subscription, type InsertSubscription, type Note, type InsertNote } from "@shared/schema";
+import { type Customer, type InsertCustomer, type Subscription, type InsertSubscription, type Note, type InsertNote, type User, type InsertUser } from "@shared/schema";
 import { randomUUID } from "crypto";
+import session from "express-session";
+import createMemoryStore from "memorystore";
+import type { Store } from "express-session";
+
+const MemoryStore = createMemoryStore(session);
 
 export interface IStorage {
+  getUser(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  
   getCustomer(id: string): Promise<Customer | undefined>;
   getAllCustomers(): Promise<Customer[]>;
   createCustomer(customer: InsertCustomer): Promise<Customer>;
+  updateCustomer(id: string, customer: Partial<InsertCustomer>): Promise<Customer | undefined>;
+  deleteCustomer(id: string): Promise<boolean>;
   
   getSubscription(id: string): Promise<Subscription | undefined>;
   getSubscriptionsByCustomer(customerId: string): Promise<Subscription[]>;
@@ -14,17 +25,42 @@ export interface IStorage {
   getNote(id: string): Promise<Note | undefined>;
   getNotesByCustomer(customerId: string): Promise<Note[]>;
   createNote(note: InsertNote): Promise<Note>;
+  
+  sessionStore: Store;
 }
 
 export class MemStorage implements IStorage {
+  private users: Map<string, User>;
   private customers: Map<string, Customer>;
   private subscriptions: Map<string, Subscription>;
   private notes: Map<string, Note>;
+  public sessionStore: Store;
 
   constructor() {
+    this.users = new Map();
     this.customers = new Map();
     this.subscriptions = new Map();
     this.notes = new Map();
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000,
+    });
+  }
+
+  async getUser(id: string): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = randomUUID();
+    const user: User = { ...insertUser, id };
+    this.users.set(id, user);
+    return user;
   }
 
   async getCustomer(id: string): Promise<Customer | undefined> {
@@ -45,6 +81,23 @@ export class MemStorage implements IStorage {
     };
     this.customers.set(id, customer);
     return customer;
+  }
+
+  async updateCustomer(id: string, updates: Partial<InsertCustomer>): Promise<Customer | undefined> {
+    const existing = this.customers.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Customer = {
+      ...existing,
+      ...updates,
+      id,
+    };
+    this.customers.set(id, updated);
+    return updated;
+  }
+
+  async deleteCustomer(id: string): Promise<boolean> {
+    return this.customers.delete(id);
   }
 
   async getSubscription(id: string): Promise<Subscription | undefined> {

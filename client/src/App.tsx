@@ -7,51 +7,79 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 import Dashboard from "@/pages/Dashboard";
 import Customers from "@/pages/Customers";
 import CalendarView from "@/pages/CalendarView";
 import Notifications from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
+import AuthPage from "@/pages/AuthPage";
 import NotFound from "@/pages/not-found";
+import { useAuth } from "@/hooks/use-auth";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/customers" component={Customers} />
-      <Route path="/calendar" component={CalendarView} />
-      <Route path="/notifications" component={Notifications} />
-      <Route path="/settings" component={Settings} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
-export default function App() {
+function AuthenticatedApp() {
+  const { user, logoutMutation } = useAuth();
   const style = {
     "--sidebar-width": "16rem",
     "--sidebar-width-icon": "3rem",
   };
 
   return (
+    <SidebarProvider style={style as React.CSSProperties}>
+      <div className="flex h-screen w-full">
+        <AppSidebar />
+        <div className="flex flex-col flex-1">
+          <header className="flex items-center justify-between p-4 border-b">
+            <div className="flex items-center gap-4">
+              <SidebarTrigger data-testid="button-sidebar-toggle" />
+              {user && <span className="text-sm text-muted-foreground">Welcome, {user.username}</span>}
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => logoutMutation.mutate()}
+                data-testid="button-logout"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          </header>
+          <main className="flex-1 overflow-auto p-6">
+            <Switch>
+              <ProtectedRoute path="/" component={Dashboard} />
+              <ProtectedRoute path="/customers" component={Customers} />
+              <ProtectedRoute path="/calendar" component={CalendarView} />
+              <ProtectedRoute path="/notifications" component={Notifications} />
+              <ProtectedRoute path="/settings" component={Settings} />
+              <Route component={NotFound} />
+            </Switch>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+}
+
+export default function App() {
+  return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider defaultTheme="dark">
-          <SidebarProvider style={style as React.CSSProperties}>
-            <div className="flex h-screen w-full">
-              <AppSidebar />
-              <div className="flex flex-col flex-1">
-                <header className="flex items-center justify-between p-4 border-b">
-                  <SidebarTrigger data-testid="button-sidebar-toggle" />
-                  <ThemeToggle />
-                </header>
-                <main className="flex-1 overflow-auto p-6">
-                  <Router />
-                </main>
-              </div>
-            </div>
-          </SidebarProvider>
-          <Toaster />
+          <AuthProvider>
+            <Switch>
+              <Route path="/auth" component={AuthPage} />
+              <Route>
+                <AuthenticatedApp />
+              </Route>
+            </Switch>
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
