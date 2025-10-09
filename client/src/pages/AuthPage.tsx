@@ -27,7 +27,7 @@ export default function AuthPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl">Welcome to ABB ELSE SaaS Watchdog</CardTitle>
+            <CardTitle className="text-2xl">Welcome to ELSE SaaS Watchdog</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
