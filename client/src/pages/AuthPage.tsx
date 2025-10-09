@@ -35,7 +35,6 @@ export default function AuthPage() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl">Welcome to ViewPoint Watchdog</CardTitle>
-            <CardDescription>Manage your SaaS renewals with ease</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
