@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +30,8 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     opportunityName: customer.opportunityName || "",
     renewalAmount: customer.renewalAmount || "",
     responsibleSalesperson: customer.responsibleSalesperson || "",
+    churn: customer.churn,
+    churnReason: customer.churnReason || "",
   });
 
   useEffect(() => {
@@ -40,6 +43,8 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       opportunityName: customer.opportunityName || "",
       renewalAmount: customer.renewalAmount || "",
       responsibleSalesperson: customer.responsibleSalesperson || "",
+      churn: customer.churn,
+      churnReason: customer.churnReason || "",
     });
   }, [customer]);
 
@@ -148,6 +153,30 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
               data-testid="input-edit-responsible-salesperson"
             />
           </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="edit-churn"
+              checked={formData.churn}
+              onCheckedChange={(checked) => setFormData({ ...formData, churn: checked as boolean, churnReason: checked ? formData.churnReason : "" })}
+              data-testid="checkbox-edit-churn"
+            />
+            <Label htmlFor="edit-churn" className="cursor-pointer">
+              Churn
+            </Label>
+          </div>
+          {formData.churn && (
+            <div className="space-y-2">
+              <Label htmlFor="edit-churnReason">Churn Reason</Label>
+              <Input
+                id="edit-churnReason"
+                value={formData.churnReason}
+                onChange={(e) => setFormData({ ...formData, churnReason: e.target.value })}
+                placeholder="Enter reason for churn"
+                required
+                data-testid="input-edit-churn-reason"
+              />
+            </div>
+          )}
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit">
               Cancel
