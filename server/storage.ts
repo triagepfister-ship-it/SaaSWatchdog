@@ -80,6 +80,8 @@ export class MemStorage implements IStorage {
       opportunityName: insertCustomer.opportunityName ?? null,
       renewalAmount: insertCustomer.renewalAmount ?? null,
       responsibleSalesperson: insertCustomer.responsibleSalesperson ?? null,
+      churn: insertCustomer.churn ?? false,
+      churnReason: insertCustomer.churnReason ?? null,
       status: insertCustomer.status ?? "active"
     };
     this.customers.set(id, customer);
@@ -98,6 +100,8 @@ export class MemStorage implements IStorage {
       opportunityName: updates.opportunityName !== undefined ? (updates.opportunityName || null) : existing.opportunityName,
       renewalAmount: updates.renewalAmount !== undefined ? (updates.renewalAmount || null) : existing.renewalAmount,
       responsibleSalesperson: updates.responsibleSalesperson !== undefined ? (updates.responsibleSalesperson || null) : existing.responsibleSalesperson,
+      churn: updates.churn !== undefined ? updates.churn : existing.churn,
+      churnReason: updates.churnReason !== undefined ? (updates.churnReason || null) : existing.churnReason,
     };
     this.customers.set(id, updated);
     return updated;
