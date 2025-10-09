@@ -18,6 +18,7 @@ export const customers = pgTable("customers", {
   site: text("site"),
   opportunityName: text("opportunity_name"),
   renewalAmount: decimal("renewal_amount", { precision: 10, scale: 2 }),
+  renewalExpirationDate: timestamp("renewal_expiration_date"),
   responsibleSalesperson: text("responsible_salesperson"),
   churn: boolean("churn").notNull().default(false),
   churnReason: text("churn_reason"),
