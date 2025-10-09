@@ -77,6 +77,7 @@ export class MemStorage implements IStorage {
       ...insertCustomer, 
       id,
       accountManager: insertCustomer.accountManager ?? null,
+      opportunityName: insertCustomer.opportunityName ?? null,
       status: insertCustomer.status ?? "active"
     };
     this.customers.set(id, customer);

@@ -15,6 +15,7 @@ export const customers = pgTable("customers", {
   email: text("email").notNull(),
   company: text("company").notNull(),
   accountManager: text("account_manager"),
+  opportunityName: text("opportunity_name"),
   status: text("status").notNull().default("active"),
 });
 
