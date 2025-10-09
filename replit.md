@@ -7,10 +7,10 @@ ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that hel
 The application is in active development with the following features implemented:
 
 ### Completed Features
-- **Authentication System**: Username/password authentication with session management
+- **Authentication System**: Hardcoded user authentication with session management (3 users: Anvesh, Stephen, Calvin - all with password "viewpoint")
 - **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers
-- **Dashboard**: Overview of customer metrics and recent activity
-- **Dark/Light Theme**: Theme toggle with persistent preferences
+- **Dashboard**: Overview of customer metrics including total revenue aggregation from all customer renewal amounts
+- **ABB Branding**: Application uses ABB LTD corporate color scheme (ABB Red #FF000F) with light mode theme
 - **Responsive Design**: Mobile-friendly interface with sidebar navigation
 
 ### Architecture
@@ -36,14 +36,14 @@ shared/
 ```
 
 ### Authentication Flow
-1. Users must register/login at `/auth` before accessing the app
-2. Session-based authentication using express-session with in-memory store
-3. All API routes are protected and require authentication
-4. Protected routes automatically redirect to `/auth` if not authenticated
+1. Users must login at `/auth` before accessing the app (no registration - hardcoded users only)
+2. Three hardcoded users available: Anvesh, Stephen, Calvin (all passwords: "viewpoint")
+3. Session-based authentication using express-session with in-memory store
+4. All API routes are protected and require authentication
+5. Protected routes automatically redirect to `/auth` if not authenticated
 
 ### API Endpoints
-- `POST /api/register` - Create new user account
-- `POST /api/login` - Login with username/password
+- `POST /api/login` - Login with username/password (hardcoded users only)
 - `POST /api/logout` - Logout and destroy session
 - `GET /api/user` - Get current authenticated user
 - `GET /api/customers` - List all customers
@@ -53,12 +53,11 @@ shared/
 - `DELETE /api/customers/:id` - Delete customer
 
 ### Recent Changes (Latest Session)
-- Added "Churn" checkbox to customer form with conditional "Churn Reason" text field (required when churn is checked)
-- Created dedicated Churn page to list churned customers with their information, renewal amount, and churn reason
-- Added Churn navigation item to sidebar for easy access to churned customer tracking
-- Implemented proper null normalization in storage layer for all optional fields including churn-related fields
-- Enhanced storage to preserve valid numeric values (including 0) for renewalAmount while normalizing empty strings to null
-- All customer fields now properly handle create and update operations with consistent data normalization
+- Removed dark mode - application now uses only light mode with ABB branding
+- Removed registration functionality - authentication now uses hardcoded users only
+- Updated authentication system to use three hardcoded users (Anvesh, Stephen, Calvin) with password "viewpoint"
+- Implemented total revenue calculation on Dashboard that aggregates all customer renewal amounts
+- Dashboard Total Revenue card now displays sum of all renewalAmount values in USD format with cents
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
@@ -70,7 +69,7 @@ shared/
 7. Consider migrating from in-memory to PostgreSQL database for persistence
 
 ### User Preferences
-- Default theme: Dark mode
+- Default theme: Light mode with ABB Red branding
 - Clean, minimal UI without unnecessary mock data
 - Password-protected access required
 

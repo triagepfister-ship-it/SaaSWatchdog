@@ -2,8 +2,6 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
-import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
 
@@ -13,20 +11,11 @@ declare global {
   }
 }
 
-const scryptAsync = promisify(scrypt);
-
-async function hashPassword(password: string) {
-  const salt = randomBytes(16).toString("hex");
-  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `${buf.toString("hex")}.${salt}`;
-}
-
-async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
-}
+const HARDCODED_USERS = [
+  { id: "1", username: "Anvesh", password: "viewpoint" },
+  { id: "2", username: "Stephen", password: "viewpoint" },
+  { id: "3", username: "Calvin", password: "viewpoint" },
+];
 
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
@@ -42,45 +31,21 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
-      const user = await storage.getUserByUsername(username);
-      if (!user || !(await comparePasswords(password, user.password))) {
+    new LocalStrategy((username, password, done) => {
+      const user = HARDCODED_USERS.find(
+        u => u.username === username && u.password === password
+      );
+      if (!user) {
         return done(null, false);
-      } else {
-        return done(null, user);
       }
+      return done(null, user);
     }),
   );
 
   passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser(async (id: string, done) => {
-    const user = await storage.getUser(id);
-    done(null, user);
-  });
-
-  app.post("/api/register", async (req, res, next) => {
-    try {
-      const { insertUserSchema } = await import("@shared/schema");
-      const validatedData = insertUserSchema.parse(req.body);
-
-      const existingUser = await storage.getUserByUsername(validatedData.username);
-      if (existingUser) {
-        return res.status(400).send("Username already exists");
-      }
-
-      const user = await storage.createUser({
-        ...validatedData,
-        password: await hashPassword(validatedData.password),
-      });
-
-      req.login(user, (err) => {
-        if (err) return next(err);
-        const { password, ...userWithoutPassword } = user;
-        res.status(201).json(userWithoutPassword);
-      });
-    } catch (error) {
-      return res.status(400).send("Invalid registration data");
-    }
+  passport.deserializeUser((id: string, done) => {
+    const user = HARDCODED_USERS.find(u => u.id === id);
+    done(null, user || null);
   });
 
   app.post("/api/login", passport.authenticate("local"), (req, res) => {
