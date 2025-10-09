@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -26,6 +27,8 @@ export function AddCustomerDialog() {
     opportunityName: "",
     renewalAmount: "",
     responsibleSalesperson: "",
+    churn: false,
+    churnReason: "",
   });
 
   const createMutation = useMutation({
@@ -41,7 +44,7 @@ export function AddCustomerDialog() {
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "" });
+      setFormData({ name: "", email: "", company: "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -148,6 +151,30 @@ export function AddCustomerDialog() {
               data-testid="input-responsible-salesperson"
             />
           </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="churn"
+              checked={formData.churn}
+              onCheckedChange={(checked) => setFormData({ ...formData, churn: checked as boolean, churnReason: checked ? formData.churnReason : "" })}
+              data-testid="checkbox-churn"
+            />
+            <Label htmlFor="churn" className="cursor-pointer">
+              Churn
+            </Label>
+          </div>
+          {formData.churn && (
+            <div className="space-y-2">
+              <Label htmlFor="churnReason">Churn Reason</Label>
+              <Input
+                id="churnReason"
+                value={formData.churnReason}
+                onChange={(e) => setFormData({ ...formData, churnReason: e.target.value })}
+                placeholder="Enter reason for churn"
+                required
+                data-testid="input-churn-reason"
+              />
+            </div>
+          )}
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} data-testid="button-cancel">
               Cancel
