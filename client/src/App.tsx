@@ -5,8 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import Dashboard from "@/pages/Dashboard";
@@ -38,18 +36,15 @@ function AuthenticatedApp() {
               <SidebarTrigger data-testid="button-sidebar-toggle" />
               {user && <span className="text-sm text-muted-foreground">Welcome, {user.username}</span>}
             </div>
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => logoutMutation.mutate()}
-                data-testid="button-logout"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => logoutMutation.mutate()}
+              data-testid="button-logout"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
           </header>
           <main className="flex-1 overflow-auto p-6">
             <Switch>
@@ -72,17 +67,15 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <ThemeProvider defaultTheme="dark">
-          <AuthProvider>
-            <Switch>
-              <Route path="/auth" component={AuthPage} />
-              <Route>
-                <AuthenticatedApp />
-              </Route>
-            </Switch>
-            <Toaster />
-          </AuthProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <Switch>
+            <Route path="/auth" component={AuthPage} />
+            <Route>
+              <AuthenticatedApp />
+            </Route>
+          </Switch>
+          <Toaster />
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
