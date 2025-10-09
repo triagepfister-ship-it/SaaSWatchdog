@@ -14,6 +14,7 @@ export const customers = pgTable("customers", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   company: text("company").notNull(),
+  software: text("software").notNull(),
   accountManager: text("account_manager"),
   opportunityName: text("opportunity_name"),
   renewalAmount: decimal("renewal_amount", { precision: 10, scale: 2 }),
@@ -61,3 +62,14 @@ export type Subscription = typeof subscriptions.$inferSelect;
 
 export type InsertNote = z.infer<typeof insertNoteSchema>;
 export type Note = typeof notes.$inferSelect;
+
+// Software types available in the system
+export const SOFTWARE_TYPES = [
+  "ABB Ability EDCS",
+  "ABB Ability Manufacturing Operations Management",
+  "ABB Ability System 800xA",
+  "ABB Ability Performance Optimization",
+  "Other"
+] as const;
+
+export type SoftwareType = typeof SOFTWARE_TYPES[number];
