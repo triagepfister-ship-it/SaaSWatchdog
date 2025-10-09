@@ -28,7 +28,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     email: customer.email,
     company: customer.company,
     software: customer.software,
-    accountManager: customer.accountManager || "",
+    site: customer.site || "",
     opportunityName: customer.opportunityName || "",
     renewalAmount: customer.renewalAmount || "",
     responsibleSalesperson: customer.responsibleSalesperson || "",
@@ -42,7 +42,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       email: customer.email,
       company: customer.company,
       software: customer.software,
-      accountManager: customer.accountManager || "",
+      site: customer.site || "",
       opportunityName: customer.opportunityName || "",
       renewalAmount: customer.renewalAmount || "",
       responsibleSalesperson: customer.responsibleSalesperson || "",
@@ -96,7 +96,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-email">Email</Label>
+            <Label htmlFor="edit-email">Customer Email</Label>
             <Input
               id="edit-email"
               type="email"
@@ -136,12 +136,13 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-accountManager">Account Manager</Label>
+            <Label htmlFor="edit-site">Site</Label>
             <Input
-              id="edit-accountManager"
-              value={formData.accountManager}
-              onChange={(e) => setFormData({ ...formData, accountManager: e.target.value })}
-              data-testid="input-edit-account-manager"
+              id="edit-site"
+              value={formData.site}
+              onChange={(e) => setFormData({ ...formData, site: e.target.value })}
+              placeholder="Enter site location"
+              data-testid="input-edit-site"
             />
           </div>
           <div className="space-y-2">

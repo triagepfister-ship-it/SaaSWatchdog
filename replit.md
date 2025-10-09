@@ -64,6 +64,10 @@ shared/
 - Added constraint: "Add Customer" button disabled when "All Software" filter is selected
 - Software field in customer form auto-inherits from filter selection and becomes read-only
 - Software segregation enforced: customers can only be added to specific software types
+- Customer form updated: Changed "Email" label to "Customer Email"
+- Customer form updated: Added "Site" field (text input for site location)
+- Customer form updated: Removed "Account Manager" field
+- Customer schema updated: Replaced accountManager field with site field
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

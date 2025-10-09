@@ -15,7 +15,7 @@ export const customers = pgTable("customers", {
   email: text("email").notNull(),
   company: text("company").notNull(),
   software: text("software").notNull(),
-  accountManager: text("account_manager"),
+  site: text("site"),
   opportunityName: text("opportunity_name"),
   renewalAmount: decimal("renewal_amount", { precision: 10, scale: 2 }),
   responsibleSalesperson: text("responsible_salesperson"),

@@ -29,7 +29,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
     email: "",
     company: "",
     software: selectedSoftware !== "all" ? selectedSoftware : "",
-    accountManager: "",
+    site: "",
     opportunityName: "",
     renewalAmount: "",
     responsibleSalesperson: "",
@@ -57,7 +57,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
+      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -104,7 +104,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Customer Email</Label>
             <Input
               id="email"
               type="email"
@@ -147,13 +147,13 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="accountManager">Account Manager</Label>
+            <Label htmlFor="site">Site</Label>
             <Input
-              id="accountManager"
-              value={formData.accountManager}
-              onChange={(e) => setFormData({ ...formData, accountManager: e.target.value })}
-              placeholder="Sarah Johnson"
-              data-testid="input-account-manager"
+              id="site"
+              value={formData.site}
+              onChange={(e) => setFormData({ ...formData, site: e.target.value })}
+              placeholder="Enter site location"
+              data-testid="input-site"
             />
           </div>
           <div className="space-y-2">

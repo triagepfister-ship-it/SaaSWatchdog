@@ -76,7 +76,7 @@ export class MemStorage implements IStorage {
     const customer: Customer = { 
       ...insertCustomer, 
       id,
-      accountManager: insertCustomer.accountManager && insertCustomer.accountManager.trim() !== "" ? insertCustomer.accountManager : null,
+      site: insertCustomer.site && insertCustomer.site.trim() !== "" ? insertCustomer.site : null,
       opportunityName: insertCustomer.opportunityName && insertCustomer.opportunityName.trim() !== "" ? insertCustomer.opportunityName : null,
       renewalAmount: (insertCustomer.renewalAmount !== undefined && insertCustomer.renewalAmount !== null && insertCustomer.renewalAmount.toString().trim() !== "") ? insertCustomer.renewalAmount : null,
       responsibleSalesperson: insertCustomer.responsibleSalesperson && insertCustomer.responsibleSalesperson.trim() !== "" ? insertCustomer.responsibleSalesperson : null,
@@ -96,7 +96,7 @@ export class MemStorage implements IStorage {
       ...existing,
       ...updates,
       id,
-      accountManager: updates.accountManager !== undefined ? (updates.accountManager && updates.accountManager.trim() !== "" ? updates.accountManager : null) : existing.accountManager,
+      site: updates.site !== undefined ? (updates.site && updates.site.trim() !== "" ? updates.site : null) : existing.site,
       opportunityName: updates.opportunityName !== undefined ? (updates.opportunityName && updates.opportunityName.trim() !== "" ? updates.opportunityName : null) : existing.opportunityName,
       renewalAmount: updates.renewalAmount !== undefined ? (updates.renewalAmount !== null && updates.renewalAmount.toString().trim() !== "" ? updates.renewalAmount : null) : existing.renewalAmount,
       responsibleSalesperson: updates.responsibleSalesperson !== undefined ? (updates.responsibleSalesperson && updates.responsibleSalesperson.trim() !== "" ? updates.responsibleSalesperson : null) : existing.responsibleSalesperson,
