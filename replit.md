@@ -53,13 +53,11 @@ shared/
 - `DELETE /api/customers/:id` - Delete customer
 
 ### Recent Changes (Latest Session)
-- Added full authentication system with login/register functionality
-- Implemented customer CRUD operations with backend API
-- Removed all mock/sample data from the application
-- Created EditCustomerDialog for updating customer information
-- Added delete confirmation dialogs for customer deletion
-- Updated Dashboard to show real customer metrics
-- Cleaned up Calendar and Notifications pages (ready for subscription features)
+- Added "Renewal Amount ($)" currency field to customer form with decimal precision (DECIMAL 10,2)
+- Added "Responsible Salesperson" email field to customer form for sales contact tracking
+- Implemented proper null normalization in storage layer for all optional fields (accountManager, opportunityName, renewalAmount, responsibleSalesperson)
+- All customer fields now display properly in View Details dialog with currency formatting for renewal amounts
+- Enhanced customer management with complete field set for renewal tracking
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
