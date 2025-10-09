@@ -53,11 +53,12 @@ shared/
 - `DELETE /api/customers/:id` - Delete customer
 
 ### Recent Changes (Latest Session)
-- Added "Renewal Amount ($)" currency field to customer form with decimal precision (DECIMAL 10,2)
-- Added "Responsible Salesperson" email field to customer form for sales contact tracking
-- Implemented proper null normalization in storage layer for all optional fields (accountManager, opportunityName, renewalAmount, responsibleSalesperson)
-- All customer fields now display properly in View Details dialog with currency formatting for renewal amounts
-- Enhanced customer management with complete field set for renewal tracking
+- Added "Churn" checkbox to customer form with conditional "Churn Reason" text field (required when churn is checked)
+- Created dedicated Churn page to list churned customers with their information, renewal amount, and churn reason
+- Added Churn navigation item to sidebar for easy access to churned customer tracking
+- Implemented proper null normalization in storage layer for all optional fields including churn-related fields
+- Enhanced storage to preserve valid numeric values (including 0) for renewalAmount while normalizing empty strings to null
+- All customer fields now properly handle create and update operations with consistent data normalization
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
