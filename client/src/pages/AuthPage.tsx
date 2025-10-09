@@ -115,7 +115,7 @@ export default function AuthPage() {
       </div>
       <div className="hidden lg:flex flex-1 bg-primary/10 items-center justify-center p-8">
         <div className="max-w-md text-center">
-          <h2 className="text-3xl font-bold mb-4">Track Your SaaS Renewals</h2>
+          <h2 className="text-3xl font-bold mb-4">Manage ViewPoint Renewals and Churn</h2>
           <p className="text-muted-foreground text-lg">
             Never miss a renewal again. Manage customer subscriptions, automate notifications, 
             and prevent churn with our comprehensive tracking platform.
