@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { insertCustomerSchema } from "@shared/schema";
+import { insertCustomerSchema, insertLessonsLearnedSchema } from "@shared/schema";
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
@@ -48,6 +48,51 @@ export function registerRoutes(app: Express): Server {
   app.delete("/api/customers/:id", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const success = await storage.deleteCustomer(req.params.id);
+    if (!success) return res.sendStatus(404);
+    res.sendStatus(204);
+  });
+
+  // Lessons Learned CRUD routes
+  app.get("/api/lessons-learned", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const lessonsLearned = await storage.getAllLessonsLearned();
+    res.json(lessonsLearned);
+  });
+
+  app.get("/api/lessons-learned/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const lessonsLearned = await storage.getLessonsLearned(req.params.id);
+    if (!lessonsLearned) return res.sendStatus(404);
+    res.json(lessonsLearned);
+  });
+
+  app.post("/api/lessons-learned", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    try {
+      const validatedData = insertLessonsLearnedSchema.parse(req.body);
+      const lessonsLearned = await storage.createLessonsLearned(validatedData);
+      res.status(201).json(lessonsLearned);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid lessons learned data" });
+    }
+  });
+
+  app.patch("/api/lessons-learned/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    try {
+      const partialLessonsLearnedSchema = insertLessonsLearnedSchema.partial();
+      const validatedData = partialLessonsLearnedSchema.parse(req.body);
+      const lessonsLearned = await storage.updateLessonsLearned(req.params.id, validatedData);
+      if (!lessonsLearned) return res.sendStatus(404);
+      res.json(lessonsLearned);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid lessons learned data" });
+    }
+  });
+
+  app.delete("/api/lessons-learned/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const success = await storage.deleteLessonsLearned(req.params.id);
     if (!success) return res.sendStatus(404);
     res.sendStatus(204);
   });

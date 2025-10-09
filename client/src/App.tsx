@@ -13,6 +13,7 @@ import Churn from "@/pages/Churn";
 import CalendarView from "@/pages/CalendarView";
 import Notifications from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
+import LessonsLearned from "@/pages/LessonsLearned";
 import AuthPage from "@/pages/AuthPage";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/use-auth";
@@ -52,6 +53,7 @@ function AuthenticatedApp() {
               <ProtectedRoute path="/customers" component={Customers} />
               <ProtectedRoute path="/churn" component={Churn} />
               <ProtectedRoute path="/calendar" component={CalendarView} />
+              <ProtectedRoute path="/lessons-learned" component={LessonsLearned} />
               <ProtectedRoute path="/notifications" component={Notifications} />
               <ProtectedRoute path="/settings" component={Settings} />
               <Route component={NotFound} />

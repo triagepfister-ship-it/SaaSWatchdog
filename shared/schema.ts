@@ -51,6 +51,33 @@ export const SOFTWARE_TYPES = [
 
 export type SoftwareType = typeof SOFTWARE_TYPES[number];
 
+// Lessons Learned phases
+export const LESSONS_LEARNED_PHASES = [
+  "Initiate",
+  "Root Cause Analysis",
+  "Implementation",
+  "Closed"
+] as const;
+
+export type LessonsLearnedPhase = typeof LESSONS_LEARNED_PHASES[number];
+
+export const lessonsLearned = pgTable("lessons_learned", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  phase: text("phase").notNull().default("Initiate"),
+  customerId: varchar("customer_id").references(() => customers.id),
+  software: text("software"),
+  initiatedBy: text("initiated_by").notNull(),
+  initiatedDate: timestamp("initiated_date").notNull().default(sql`now()`),
+  rootCauseAnalysis: text("root_cause_analysis"),
+  implementationPlan: text("implementation_plan"),
+  implementationNotes: text("implementation_notes"),
+  closedDate: timestamp("closed_date"),
+  closedBy: text("closed_by"),
+  outcome: text("outcome"),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -71,6 +98,27 @@ export const insertCustomerSchema = createInsertSchema(customers).omit({ id: tru
 });
 export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true });
 export const insertNoteSchema = createInsertSchema(notes).omit({ id: true, createdAt: true });
+export const insertLessonsLearnedSchema = createInsertSchema(lessonsLearned).omit({ 
+  id: true, 
+  initiatedDate: true 
+}).extend({
+  phase: z.enum(LESSONS_LEARNED_PHASES),
+  software: z.enum(SOFTWARE_TYPES).nullable().optional(),
+  customerId: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  rootCauseAnalysis: z.string().nullable().optional(),
+  implementationPlan: z.string().nullable().optional(),
+  implementationNotes: z.string().nullable().optional(),
+  closedDate: z.preprocess(
+    (val) => {
+      if (!val || (typeof val === 'string' && val.trim() === "")) return null;
+      return val;
+    },
+    z.coerce.date().nullable().optional()
+  ),
+  closedBy: z.string().nullable().optional(),
+  outcome: z.string().nullable().optional(),
+});
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -83,3 +131,6 @@ export type Subscription = typeof subscriptions.$inferSelect;
 
 export type InsertNote = z.infer<typeof insertNoteSchema>;
 export type Note = typeof notes.$inferSelect;
+
+export type InsertLessonsLearned = z.infer<typeof insertLessonsLearnedSchema>;
+export type LessonsLearned = typeof lessonsLearned.$inferSelect;

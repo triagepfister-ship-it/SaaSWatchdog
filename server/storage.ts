@@ -1,4 +1,4 @@
-import { type Customer, type InsertCustomer, type Subscription, type InsertSubscription, type Note, type InsertNote, type User, type InsertUser } from "@shared/schema";
+import { type Customer, type InsertCustomer, type Subscription, type InsertSubscription, type Note, type InsertNote, type User, type InsertUser, type LessonsLearned, type InsertLessonsLearned } from "@shared/schema";
 import { randomUUID } from "crypto";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -26,6 +26,12 @@ export interface IStorage {
   getNotesByCustomer(customerId: string): Promise<Note[]>;
   createNote(note: InsertNote): Promise<Note>;
   
+  getLessonsLearned(id: string): Promise<LessonsLearned | undefined>;
+  getAllLessonsLearned(): Promise<LessonsLearned[]>;
+  createLessonsLearned(lessonsLearned: InsertLessonsLearned): Promise<LessonsLearned>;
+  updateLessonsLearned(id: string, lessonsLearned: Partial<InsertLessonsLearned>): Promise<LessonsLearned | undefined>;
+  deleteLessonsLearned(id: string): Promise<boolean>;
+  
   sessionStore: Store;
 }
 
@@ -34,6 +40,7 @@ export class MemStorage implements IStorage {
   private customers: Map<string, Customer>;
   private subscriptions: Map<string, Subscription>;
   private notes: Map<string, Note>;
+  private lessonsLearned: Map<string, LessonsLearned>;
   public sessionStore: Store;
 
   constructor() {
@@ -41,6 +48,7 @@ export class MemStorage implements IStorage {
     this.customers = new Map();
     this.subscriptions = new Map();
     this.notes = new Map();
+    this.lessonsLearned = new Map();
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
@@ -154,6 +162,61 @@ export class MemStorage implements IStorage {
     const note: Note = { ...insertNote, id, createdAt };
     this.notes.set(id, note);
     return note;
+  }
+
+  async getLessonsLearned(id: string): Promise<LessonsLearned | undefined> {
+    return this.lessonsLearned.get(id);
+  }
+
+  async getAllLessonsLearned(): Promise<LessonsLearned[]> {
+    return Array.from(this.lessonsLearned.values());
+  }
+
+  async createLessonsLearned(insertLessonsLearned: InsertLessonsLearned): Promise<LessonsLearned> {
+    const id = randomUUID();
+    const initiatedDate = new Date();
+    const lessonsLearned: LessonsLearned = {
+      ...insertLessonsLearned,
+      id,
+      initiatedDate,
+      customerId: insertLessonsLearned.customerId ?? null,
+      software: insertLessonsLearned.software ?? null,
+      description: insertLessonsLearned.description ?? null,
+      rootCauseAnalysis: insertLessonsLearned.rootCauseAnalysis ?? null,
+      implementationPlan: insertLessonsLearned.implementationPlan ?? null,
+      implementationNotes: insertLessonsLearned.implementationNotes ?? null,
+      closedDate: insertLessonsLearned.closedDate ?? null,
+      closedBy: insertLessonsLearned.closedBy ?? null,
+      outcome: insertLessonsLearned.outcome ?? null,
+    };
+    this.lessonsLearned.set(id, lessonsLearned);
+    return lessonsLearned;
+  }
+
+  async updateLessonsLearned(id: string, updates: Partial<InsertLessonsLearned>): Promise<LessonsLearned | undefined> {
+    const existing = this.lessonsLearned.get(id);
+    if (!existing) return undefined;
+
+    const updated: LessonsLearned = {
+      ...existing,
+      ...updates,
+      id,
+      customerId: updates.customerId !== undefined ? updates.customerId ?? null : existing.customerId,
+      software: updates.software !== undefined ? updates.software ?? null : existing.software,
+      description: updates.description !== undefined ? updates.description ?? null : existing.description,
+      rootCauseAnalysis: updates.rootCauseAnalysis !== undefined ? updates.rootCauseAnalysis ?? null : existing.rootCauseAnalysis,
+      implementationPlan: updates.implementationPlan !== undefined ? updates.implementationPlan ?? null : existing.implementationPlan,
+      implementationNotes: updates.implementationNotes !== undefined ? updates.implementationNotes ?? null : existing.implementationNotes,
+      closedDate: updates.closedDate !== undefined ? updates.closedDate ?? null : existing.closedDate,
+      closedBy: updates.closedBy !== undefined ? updates.closedBy ?? null : existing.closedBy,
+      outcome: updates.outcome !== undefined ? updates.outcome ?? null : existing.outcome,
+    };
+    this.lessonsLearned.set(id, updated);
+    return updated;
+  }
+
+  async deleteLessonsLearned(id: string): Promise<boolean> {
+    return this.lessonsLearned.delete(id);
   }
 }
 
