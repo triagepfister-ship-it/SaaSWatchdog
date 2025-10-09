@@ -7,7 +7,7 @@ import {
 import { Customer } from "@shared/schema";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StatusBadge } from "./StatusBadge";
-import { Mail, Building2, User, Briefcase } from "lucide-react";
+import { Mail, Building2, User, Briefcase, DollarSign } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface ViewCustomerDialogProps {
@@ -80,6 +80,18 @@ export function ViewCustomerDialog({ customer, open, onOpenChange }: ViewCustome
                   <span className="font-medium">Opportunity Name</span>
                 </div>
                 <p className="text-base" data-testid="text-opportunity-name">{customer.opportunityName}</p>
+              </div>
+            )}
+
+            {customer.renewalAmount && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <DollarSign className="h-4 w-4" />
+                  <span className="font-medium">Renewal Amount</span>
+                </div>
+                <p className="text-base font-semibold" data-testid="text-renewal-amount">
+                  ${parseFloat(customer.renewalAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
               </div>
             )}
           </div>
