@@ -82,92 +82,100 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="dialog-edit-customer">
+      <DialogContent className="max-w-3xl" data-testid="dialog-edit-customer">
         <DialogHeader>
           <DialogTitle>Edit Customer</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit-name">Customer Name</Label>
-            <Input
-              id="edit-name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-              data-testid="input-edit-customer-name"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-name">Customer Name</Label>
+              <Input
+                id="edit-name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                data-testid="input-edit-customer-name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-email">Customer Email</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                data-testid="input-edit-customer-email"
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-email">Customer Email</Label>
-            <Input
-              id="edit-email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-              data-testid="input-edit-customer-email"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-company">Company</Label>
+              <Input
+                id="edit-company"
+                value={formData.company}
+                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                required
+                data-testid="input-edit-customer-company"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-software">Software</Label>
+              <Input
+                id="edit-software"
+                value={formData.software}
+                readOnly
+                className="bg-muted"
+                data-testid="input-edit-software"
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-company">Company</Label>
-            <Input
-              id="edit-company"
-              value={formData.company}
-              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-              required
-              data-testid="input-edit-customer-company"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-site">Site</Label>
+              <Input
+                id="edit-site"
+                value={formData.site}
+                onChange={(e) => setFormData({ ...formData, site: e.target.value })}
+                placeholder="Enter site location"
+                data-testid="input-edit-site"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-opportunityName">Opportunity Name</Label>
+              <Input
+                id="edit-opportunityName"
+                value={formData.opportunityName}
+                onChange={(e) => setFormData({ ...formData, opportunityName: e.target.value })}
+                data-testid="input-edit-opportunity-name"
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-software">Software</Label>
-            <Input
-              id="edit-software"
-              value={formData.software}
-              readOnly
-              className="bg-muted"
-              data-testid="input-edit-software"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-site">Site</Label>
-            <Input
-              id="edit-site"
-              value={formData.site}
-              onChange={(e) => setFormData({ ...formData, site: e.target.value })}
-              placeholder="Enter site location"
-              data-testid="input-edit-site"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-opportunityName">Opportunity Name</Label>
-            <Input
-              id="edit-opportunityName"
-              value={formData.opportunityName}
-              onChange={(e) => setFormData({ ...formData, opportunityName: e.target.value })}
-              data-testid="input-edit-opportunity-name"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-renewalAmount">Renewal Amount ($)</Label>
-            <Input
-              id="edit-renewalAmount"
-              type="number"
-              step="0.01"
-              min="0"
-              value={formData.renewalAmount}
-              onChange={(e) => setFormData({ ...formData, renewalAmount: e.target.value })}
-              data-testid="input-edit-renewal-amount"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-renewalExpirationDate">Renewal Expiration Date</Label>
-            <Input
-              id="edit-renewalExpirationDate"
-              type="date"
-              value={formData.renewalExpirationDate}
-              onChange={(e) => setFormData({ ...formData, renewalExpirationDate: e.target.value })}
-              data-testid="input-edit-renewal-expiration-date"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-renewalAmount">Renewal Amount ($)</Label>
+              <Input
+                id="edit-renewalAmount"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.renewalAmount}
+                onChange={(e) => setFormData({ ...formData, renewalAmount: e.target.value })}
+                data-testid="input-edit-renewal-amount"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-renewalExpirationDate">Renewal Expiration Date</Label>
+              <Input
+                id="edit-renewalExpirationDate"
+                type="date"
+                value={formData.renewalExpirationDate}
+                onChange={(e) => setFormData({ ...formData, renewalExpirationDate: e.target.value })}
+                data-testid="input-edit-renewal-expiration-date"
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-responsibleSalesperson">Responsible Salesperson</Label>

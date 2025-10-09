@@ -74,6 +74,7 @@ shared/
 - Customer forms updated: Added "Renewal Expiration Date" input field to both Add and Edit dialogs
 - Dashboard updated: Replaced "Active Customers" widget with "Expired Renewals" widget
 - Expired Renewals metric: Counts customers whose renewal expiration date has passed (compared to today)
+- Customer forms updated: Reorganized fields into two-column grid layout for better screen utilization
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
