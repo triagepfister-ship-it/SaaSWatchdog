@@ -80,11 +80,11 @@ export default function Settings() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="company-name">Company Name</Label>
-            <Input id="company-name" defaultValue="RenewalTrack" data-testid="input-company-name" />
+            <Input id="company-name" defaultValue="ViewPoint Watchdog" data-testid="input-company-name" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="admin-email">Admin Email</Label>
-            <Input id="admin-email" type="email" defaultValue="admin@renewaltrack.com" data-testid="input-admin-email" />
+            <Input id="admin-email" type="email" defaultValue="admin@viewpointwatchdog.com" data-testid="input-admin-email" />
           </div>
           <Button data-testid="button-save-settings">Save Changes</Button>
         </CardContent>

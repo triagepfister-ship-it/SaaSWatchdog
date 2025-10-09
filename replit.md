@@ -1,7 +1,7 @@
-# RenewalTrack - SaaS Renewal Management Platform
+# ViewPoint Watchdog - SaaS Renewal Management Platform
 
 ## Overview
-RenewalTrack is a comprehensive SaaS renewal tracking application that helps businesses manage customer subscriptions, track renewal dates, prevent churn, and automate notifications.
+ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that helps businesses manage customer subscriptions, track renewal dates, prevent churn, and automate notifications.
 
 ## Current State
 The application is in active development with the following features implemented:

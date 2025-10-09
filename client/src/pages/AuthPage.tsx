@@ -34,7 +34,7 @@ export default function AuthPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl">Welcome to RenewalTrack</CardTitle>
+            <CardTitle className="text-2xl">Welcome to ViewPoint Watchdog</CardTitle>
             <CardDescription>Manage your SaaS renewals with ease</CardDescription>
           </CardHeader>
           <CardContent>

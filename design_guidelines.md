@@ -1,4 +1,4 @@
-# SaaS Renewal Tracking Platform - Design Guidelines
+# ViewPoint Watchdog - Design Guidelines
 
 ## Design Approach: Utility-First Dashboard System
 
