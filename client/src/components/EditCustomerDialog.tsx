@@ -55,11 +55,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const dataToSend = {
-        ...data,
-        renewalExpirationDate: data.renewalExpirationDate ? new Date(data.renewalExpirationDate) : null,
-      };
-      const res = await apiRequest("PATCH", `/api/customers/${customer.id}`, dataToSend);
+      const res = await apiRequest("PATCH", `/api/customers/${customer.id}`, data);
       return await res.json();
     },
     onSuccess: () => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
-import { TrendingUp, Users, DollarSign, RefreshCw } from "lucide-react";
+import { AlertCircle, Users, DollarSign, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Customer, SOFTWARE_TYPES } from "@shared/schema";
@@ -20,8 +20,16 @@ export default function Dashboard() {
     ? customers 
     : customers.filter(c => c.software === selectedSoftware);
 
-  const activeCustomers = filteredCustomers.filter(c => c.status === "active").length;
   const totalCustomers = filteredCustomers.length;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const expiredRenewals = filteredCustomers.filter(c => {
+    if (!c.renewalExpirationDate) return false;
+    const expirationDate = new Date(c.renewalExpirationDate);
+    expirationDate.setHours(0, 0, 0, 0);
+    return expirationDate < today;
+  }).length;
   
   const totalRevenue = filteredCustomers.reduce((sum, customer) => {
     const amount = customer.renewalAmount ? parseFloat(customer.renewalAmount) : 0;
@@ -67,15 +75,15 @@ export default function Dashboard() {
         <StatCard
           title="Total Customers"
           value={totalCustomers.toString()}
-          change={`${activeCustomers} active`}
+          change={`${expiredRenewals} expired`}
           icon={Users}
         />
         <StatCard
-          title="Active Customers"
-          value={activeCustomers.toString()}
-          change={`${Math.round((activeCustomers / totalCustomers) * 100) || 0}% of total`}
-          icon={TrendingUp}
-          trend="up"
+          title="Expired Renewals"
+          value={expiredRenewals.toString()}
+          change={expiredRenewals > 0 ? "Requires attention" : "No expired renewals"}
+          icon={AlertCircle}
+          trend={expiredRenewals > 0 ? "down" : undefined}
         />
         <StatCard
           title="Upcoming Renewals"

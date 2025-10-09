@@ -47,11 +47,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const dataToSend = {
-        ...data,
-        renewalExpirationDate: data.renewalExpirationDate ? new Date(data.renewalExpirationDate) : null,
-      };
-      const validatedData = insertCustomerSchema.parse(dataToSend);
+      const validatedData = insertCustomerSchema.parse(data);
       const res = await apiRequest("POST", "/api/customers", validatedData);
       return await res.json();
     },

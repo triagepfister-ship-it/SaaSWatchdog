@@ -58,6 +58,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true }).extend({
   software: z.enum(SOFTWARE_TYPES),
+  renewalExpirationDate: z.preprocess(
+    (val) => {
+      if (!val || (typeof val === 'string' && val.trim() === "")) return null;
+      return val;
+    },
+    z.coerce.date().nullable().refine(
+      (date) => date === null || !isNaN(date.getTime()),
+      { message: "Invalid date format" }
+    )
+  ),
 });
 export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true });
 export const insertNoteSchema = createInsertSchema(notes).omit({ id: true, createdAt: true });
