@@ -45,8 +45,7 @@ export const notes = pgTable("notes", {
 // Software types available in the system
 export const SOFTWARE_TYPES = [
   "Uptime360",
-  "ViewPoint",
-  "Other"
+  "ViewPoint"
 ] as const;
 
 export type SoftwareType = typeof SOFTWARE_TYPES[number];

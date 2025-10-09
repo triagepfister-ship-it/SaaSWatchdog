@@ -54,7 +54,7 @@ shared/
 
 ### Recent Changes (Latest Session)
 - Added software type filtering to organize and manage multiple types of sold software
-- Added software field to customer schema with predefined software types (Uptime360, ViewPoint, Other)
+- Added software field to customer schema with predefined software types (Uptime360, ViewPoint)
 - Software dropdown added to customer creation and editing forms (required field)
 - Software filter dropdown added to Dashboard, Customers, and Churn pages for filtering data by selected software
 - All metrics (Total Customers, Active Customers, Total Revenue) now filter based on selected software
