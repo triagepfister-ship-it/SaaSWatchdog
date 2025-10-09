@@ -32,8 +32,8 @@ export default function LessonsLearnedPage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    software: "",
-    customerId: "",
+    software: "none",
+    customerId: "none",
   });
 
   const createMutation = useMutation({
@@ -41,11 +41,11 @@ export default function LessonsLearnedPage() {
       const res = await apiRequest("POST", "/api/lessons-learned", data);
       return await res.json();
     },
-    onSuccess: (newLesson) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/lessons-learned"] });
+    onSuccess: async (newLesson) => {
+      await queryClient.invalidateQueries({ queryKey: ["/api/lessons-learned"] });
       setIsCreateDialogOpen(false);
       setSelectedLesson(newLesson.id);
-      setFormData({ title: "", description: "", software: "", customerId: "" });
+      setFormData({ title: "", description: "", software: "none", customerId: "none" });
       toast({
         title: "Success",
         description: "Lessons Learned workflow initiated successfully",
@@ -66,15 +66,22 @@ export default function LessonsLearnedPage() {
       title: formData.title,
       description: formData.description || null,
       phase: "Initiate",
-      software: formData.software || null,
-      customerId: formData.customerId || null,
+      software: formData.software === "none" ? null : formData.software,
+      customerId: formData.customerId === "none" ? null : formData.customerId,
       initiatedBy: user?.username || "Unknown",
     });
   };
 
   if (selectedLesson) {
+    if (!selectedLessonData) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Loading workflow...</p>
+        </div>
+      );
+    }
     return <LessonDetailView 
-      lesson={selectedLessonData!} 
+      lesson={selectedLessonData} 
       onBack={() => setSelectedLesson(null)} 
     />;
   }
@@ -121,12 +128,12 @@ export default function LessonsLearnedPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="software">Software (Optional)</Label>
-                <Select value={formData.software} onValueChange={(value) => setFormData({ ...formData, software: value })}>
+                <Select value={formData.software} onValueChange={(value) => setFormData({ ...formData, software: value === "none" ? "" : value })}>
                   <SelectTrigger id="software" data-testid="select-software">
                     <SelectValue placeholder="Select software" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {SOFTWARE_TYPES.map((software) => (
                       <SelectItem key={software} value={software}>
                         {software}
@@ -137,12 +144,12 @@ export default function LessonsLearnedPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="customer">Related Customer (Optional)</Label>
-                <Select value={formData.customerId} onValueChange={(value) => setFormData({ ...formData, customerId: value })}>
+                <Select value={formData.customerId} onValueChange={(value) => setFormData({ ...formData, customerId: value === "none" ? "" : value })}>
                   <SelectTrigger id="customer" data-testid="select-customer">
                     <SelectValue placeholder="Select customer" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {customers.map((customer) => (
                       <SelectItem key={customer.id} value={customer.id}>
                         {customer.name} - {customer.company}
