@@ -27,6 +27,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     company: customer.company,
     accountManager: customer.accountManager || "",
     opportunityName: customer.opportunityName || "",
+    renewalAmount: customer.renewalAmount || "",
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       company: customer.company,
       accountManager: customer.accountManager || "",
       opportunityName: customer.opportunityName || "",
+      renewalAmount: customer.renewalAmount || "",
     });
   }, [customer]);
 
@@ -120,6 +122,18 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
               value={formData.opportunityName}
               onChange={(e) => setFormData({ ...formData, opportunityName: e.target.value })}
               data-testid="input-edit-opportunity-name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-renewalAmount">Renewal Amount ($)</Label>
+            <Input
+              id="edit-renewalAmount"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.renewalAmount}
+              onChange={(e) => setFormData({ ...formData, renewalAmount: e.target.value })}
+              data-testid="input-edit-renewal-amount"
             />
           </div>
           <div className="flex justify-end gap-2">
