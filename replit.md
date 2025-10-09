@@ -7,9 +7,10 @@ ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that hel
 The application is in active development with the following features implemented:
 
 ### Completed Features
-- **Authentication System**: Hardcoded user authentication with session management (3 users: Anvesh, Stephen, Calvin - all with password "viewpoint")
-- **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers
-- **Dashboard**: Overview of customer metrics including total revenue aggregation from all customer renewal amounts
+- **Authentication System**: Hardcoded user authentication with session management (4 users: Anvesh, Stephen, Calvin, Brian - all with password "viewpoint")
+- **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
+- **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
+- **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
 - **ABB Branding**: Application uses ABB LTD corporate color scheme (ABB Red #FF000F) with light mode theme
 - **Responsive Design**: Mobile-friendly interface with sidebar navigation
 
@@ -43,14 +44,24 @@ shared/
 5. Protected routes automatically redirect to `/auth` if not authenticated
 
 ### API Endpoints
+**Authentication:**
 - `POST /api/login` - Login with username/password (hardcoded users only)
 - `POST /api/logout` - Logout and destroy session
 - `GET /api/user` - Get current authenticated user
+
+**Customers:**
 - `GET /api/customers` - List all customers
 - `GET /api/customers/:id` - Get specific customer
 - `POST /api/customers` - Create new customer
 - `PATCH /api/customers/:id` - Update customer
 - `DELETE /api/customers/:id` - Delete customer
+
+**Lessons Learned:**
+- `GET /api/lessons-learned` - List all lessons learned workflows
+- `GET /api/lessons-learned/:id` - Get specific lessons learned workflow
+- `POST /api/lessons-learned` - Create new lessons learned workflow
+- `PATCH /api/lessons-learned/:id` - Update lessons learned workflow (phase transitions, data updates)
+- `DELETE /api/lessons-learned/:id` - Delete lessons learned workflow
 
 ### Recent Changes (Latest Session)
 - Added software type filtering to organize and manage multiple types of sold software
@@ -75,6 +86,14 @@ shared/
 - Dashboard updated: Replaced "Active Customers" widget with "Expired Renewals" widget
 - Expired Renewals metric: Counts customers whose renewal expiration date has passed (compared to today)
 - Customer forms updated: Reorganized fields into two-column grid layout for better screen utilization
+- **Lessons Learned Feature**: Complete workflow management system with 4 linear phases
+  - Phase navigation bar with visual indicators and restricted forward progression
+  - Initiate phase: Create workflow with title, description, software, and related customer
+  - Root Cause Analysis phase: Document findings and analysis
+  - Implementation phase: Track implementation plan and progress notes
+  - Closed phase: Document final outcome with automatic closure tracking
+  - List view showing all workflows with phase badges and quick access
+  - Detail view with phase-specific forms and data persistence
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
