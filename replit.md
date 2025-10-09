@@ -70,6 +70,10 @@ shared/
 - Customer schema updated: Replaced accountManager field with site field
 - Customer form updated: Changed "Software" from dropdown to read-only display field
 - Authentication updated: Added fourth hardcoded user "Brian" with password "viewpoint"
+- Customer schema updated: Added renewalExpirationDate field (timestamp) with robust validation
+- Customer forms updated: Added "Renewal Expiration Date" input field to both Add and Edit dialogs
+- Dashboard updated: Replaced "Active Customers" widget with "Expired Renewals" widget
+- Expired Renewals metric: Counts customers whose renewal expiration date has passed (compared to today)
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
