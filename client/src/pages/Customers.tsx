@@ -35,7 +35,7 @@ export default function Customers() {
           <h1 className="text-3xl font-semibold">Customers</h1>
           <p className="text-muted-foreground mt-1">Manage your customer relationships</p>
         </div>
-        <AddCustomerDialog />
+        <AddCustomerDialog selectedSoftware={selectedSoftware} />
       </div>
 
       <div className="flex gap-4">

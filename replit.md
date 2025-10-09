@@ -61,6 +61,9 @@ shared/
 - Recent customers list on Dashboard filters by selected software
 - Application name updated to "ELSE SaaS Watchdog"
 - Schema validation enforces software types using enum constraint
+- Added constraint: "Add Customer" button disabled when "All Software" filter is selected
+- Software field in customer form auto-inherits from filter selection and becomes read-only
+- Software segregation enforced: customers can only be added to specific software types
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

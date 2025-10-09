@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,14 +17,18 @@ import { useToast } from "@/hooks/use-toast";
 import { insertCustomerSchema, SOFTWARE_TYPES } from "@shared/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export function AddCustomerDialog() {
+interface AddCustomerDialogProps {
+  selectedSoftware?: string;
+}
+
+export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
-    software: "",
+    software: selectedSoftware !== "all" ? selectedSoftware : "",
     accountManager: "",
     opportunityName: "",
     renewalAmount: "",
@@ -32,6 +36,13 @@ export function AddCustomerDialog() {
     churn: false,
     churnReason: "",
   });
+
+  // Update software when selectedSoftware prop changes and dialog opens
+  useEffect(() => {
+    if (open && selectedSoftware && selectedSoftware !== "all") {
+      setFormData(prev => ({ ...prev, software: selectedSoftware }));
+    }
+  }, [open, selectedSoftware]);
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -46,7 +57,7 @@ export function AddCustomerDialog() {
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", software: "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
+      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", accountManager: "", opportunityName: "", renewalAmount: "", responsibleSalesperson: "", churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -62,10 +73,16 @@ export function AddCustomerDialog() {
     createMutation.mutate(formData);
   };
 
+  const isAllSoftwareSelected = selectedSoftware === "all" || !selectedSoftware;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button data-testid="button-add-customer">
+        <Button 
+          data-testid="button-add-customer"
+          disabled={isAllSoftwareSelected}
+          title={isAllSoftwareSelected ? "Please select a specific software type to add customers" : undefined}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Customer
         </Button>
@@ -110,11 +127,12 @@ export function AddCustomerDialog() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="software">Software</Label>
+            <Label htmlFor="software">Software {selectedSoftware && selectedSoftware !== "all" && "(Inherited from filter)"}</Label>
             <Select
               value={formData.software}
               onValueChange={(value) => setFormData({ ...formData, software: value })}
               required
+              disabled={selectedSoftware !== "all" && !!selectedSoftware}
             >
               <SelectTrigger id="software" data-testid="select-software">
                 <SelectValue placeholder="Select software" />

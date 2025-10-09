@@ -59,7 +59,7 @@ export default function Dashboard() {
               </SelectContent>
             </Select>
           </div>
-          <AddCustomerDialog />
+          <AddCustomerDialog selectedSoftware={selectedSoftware} />
         </div>
       </div>
 
