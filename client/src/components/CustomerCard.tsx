@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StatusBadge } from "./StatusBadge";
 import { Button } from "@/components/ui/button";
-import { Mail, Building2, Pencil, Trash2 } from "lucide-react";
+import { Mail, Building2, Pencil, Trash2, Eye } from "lucide-react";
 import { EditCustomerDialog } from "./EditCustomerDialog";
+import { ViewCustomerDialog } from "./ViewCustomerDialog";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +27,7 @@ interface CustomerCardProps {
 
 export function CustomerCard({ customer }: CustomerCardProps) {
   const { toast } = useToast();
+  const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -93,24 +95,38 @@ export function CustomerCard({ customer }: CustomerCardProps) {
             <Button 
               variant="outline" 
               className="flex-1" 
-              onClick={() => setEditOpen(true)}
-              data-testid={`button-edit-customer-${customer.id}`}
+              onClick={() => setViewOpen(true)}
+              data-testid={`button-view-customer-${customer.id}`}
             >
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
+              <Eye className="h-4 w-4 mr-2" />
+              View Details
             </Button>
             <Button 
               variant="outline" 
-              className="flex-1 text-destructive hover:bg-destructive/10" 
+              size="icon"
+              onClick={() => setEditOpen(true)}
+              data-testid={`button-edit-customer-${customer.id}`}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="text-destructive hover:bg-destructive/10" 
               onClick={() => setDeleteOpen(true)}
               data-testid={`button-delete-customer-${customer.id}`}
             >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      <ViewCustomerDialog 
+        customer={customer}
+        open={viewOpen}
+        onOpenChange={setViewOpen}
+      />
 
       <EditCustomerDialog 
         customer={customer}
