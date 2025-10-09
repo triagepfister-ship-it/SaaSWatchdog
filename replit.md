@@ -68,6 +68,7 @@ shared/
 - Customer form updated: Added "Site" field (text input for site location)
 - Customer form updated: Removed "Account Manager" field
 - Customer schema updated: Replaced accountManager field with site field
+- Customer form updated: Changed "Software" from dropdown to read-only display field
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

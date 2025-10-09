@@ -118,22 +118,13 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-software">Software</Label>
-            <Select
+            <Input
+              id="edit-software"
               value={formData.software}
-              onValueChange={(value) => setFormData({ ...formData, software: value })}
-              required
-            >
-              <SelectTrigger id="edit-software" data-testid="select-edit-software">
-                <SelectValue placeholder="Select software" />
-              </SelectTrigger>
-              <SelectContent>
-                {SOFTWARE_TYPES.map((software) => (
-                  <SelectItem key={software} value={software}>
-                    {software}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              readOnly
+              className="bg-muted"
+              data-testid="input-edit-software"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-site">Site</Label>

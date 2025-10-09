@@ -127,24 +127,14 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="software">Software {selectedSoftware && selectedSoftware !== "all" && "(Inherited from filter)"}</Label>
-            <Select
+            <Label htmlFor="software">Software</Label>
+            <Input
+              id="software"
               value={formData.software}
-              onValueChange={(value) => setFormData({ ...formData, software: value })}
-              required
-              disabled={selectedSoftware !== "all" && !!selectedSoftware}
-            >
-              <SelectTrigger id="software" data-testid="select-software">
-                <SelectValue placeholder="Select software" />
-              </SelectTrigger>
-              <SelectContent>
-                {SOFTWARE_TYPES.map((software) => (
-                  <SelectItem key={software} value={software}>
-                    {software}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              readOnly
+              className="bg-muted"
+              data-testid="input-software"
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="site">Site</Label>
