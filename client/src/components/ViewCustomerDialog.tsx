@@ -94,6 +94,16 @@ export function ViewCustomerDialog({ customer, open, onOpenChange }: ViewCustome
                 </p>
               </div>
             )}
+
+            {customer.responsibleSalesperson && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Mail className="h-4 w-4" />
+                  <span className="font-medium">Responsible Salesperson</span>
+                </div>
+                <p className="text-base" data-testid="text-responsible-salesperson">{customer.responsibleSalesperson}</p>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

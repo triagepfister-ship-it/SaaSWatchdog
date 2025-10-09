@@ -94,6 +94,10 @@ export class MemStorage implements IStorage {
       ...existing,
       ...updates,
       id,
+      accountManager: updates.accountManager !== undefined ? (updates.accountManager || null) : existing.accountManager,
+      opportunityName: updates.opportunityName !== undefined ? (updates.opportunityName || null) : existing.opportunityName,
+      renewalAmount: updates.renewalAmount !== undefined ? (updates.renewalAmount || null) : existing.renewalAmount,
+      responsibleSalesperson: updates.responsibleSalesperson !== undefined ? (updates.responsibleSalesperson || null) : existing.responsibleSalesperson,
     };
     this.customers.set(id, updated);
     return updated;
