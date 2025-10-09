@@ -54,12 +54,13 @@ shared/
 
 ### Recent Changes (Latest Session)
 - Added software type filtering to organize and manage multiple types of sold software
-- Added software field to customer schema with predefined software types (ABB Ability EDCS, Manufacturing Operations Management, System 800xA, Performance Optimization, Other)
+- Added software field to customer schema with predefined software types (Uptime360, ViewPoint, Other)
 - Software dropdown added to customer creation and editing forms (required field)
 - Software filter dropdown added to Dashboard, Customers, and Churn pages for filtering data by selected software
 - All metrics (Total Customers, Active Customers, Total Revenue) now filter based on selected software
 - Recent customers list on Dashboard filters by selected software
-- Application name updated from "ViewPoint Watchdog" to "ELSE SaaS Watchdog"
+- Application name updated to "ELSE SaaS Watchdog"
+- Schema validation enforces software types using enum constraint
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

@@ -44,10 +44,8 @@ export const notes = pgTable("notes", {
 
 // Software types available in the system
 export const SOFTWARE_TYPES = [
-  "ABB Ability EDCS",
-  "ABB Ability Manufacturing Operations Management",
-  "ABB Ability System 800xA",
-  "ABB Ability Performance Optimization",
+  "Uptime360",
+  "ViewPoint",
   "Other"
 ] as const;
 
