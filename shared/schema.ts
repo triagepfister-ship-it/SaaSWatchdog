@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, decimal, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, decimal, timestamp, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -18,6 +18,8 @@ export const customers = pgTable("customers", {
   opportunityName: text("opportunity_name"),
   renewalAmount: decimal("renewal_amount", { precision: 10, scale: 2 }),
   responsibleSalesperson: text("responsible_salesperson"),
+  churn: boolean("churn").notNull().default(false),
+  churnReason: text("churn_reason"),
   status: text("status").notNull().default("active"),
 });
 
