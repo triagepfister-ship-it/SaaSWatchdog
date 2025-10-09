@@ -28,6 +28,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     accountManager: customer.accountManager || "",
     opportunityName: customer.opportunityName || "",
     renewalAmount: customer.renewalAmount || "",
+    responsibleSalesperson: customer.responsibleSalesperson || "",
   });
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       accountManager: customer.accountManager || "",
       opportunityName: customer.opportunityName || "",
       renewalAmount: customer.renewalAmount || "",
+      responsibleSalesperson: customer.responsibleSalesperson || "",
     });
   }, [customer]);
 
@@ -134,6 +136,16 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
               value={formData.renewalAmount}
               onChange={(e) => setFormData({ ...formData, renewalAmount: e.target.value })}
               data-testid="input-edit-renewal-amount"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-responsibleSalesperson">Responsible Salesperson</Label>
+            <Input
+              id="edit-responsibleSalesperson"
+              type="email"
+              value={formData.responsibleSalesperson}
+              onChange={(e) => setFormData({ ...formData, responsibleSalesperson: e.target.value })}
+              data-testid="input-edit-responsible-salesperson"
             />
           </div>
           <div className="flex justify-end gap-2">
