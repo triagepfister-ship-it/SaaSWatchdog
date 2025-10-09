@@ -1,19 +1,29 @@
+import { useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 import { TrendingUp, Users, DollarSign, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { Customer } from "@shared/schema";
+import { Customer, SOFTWARE_TYPES } from "@shared/schema";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function Dashboard() {
+  const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
+  
   const { data: customers = [] } = useQuery<Customer[]>({
     queryKey: ["/api/customers"],
   });
 
-  const activeCustomers = customers.filter(c => c.status === "active").length;
-  const totalCustomers = customers.length;
+  // Filter customers by selected software
+  const filteredCustomers = selectedSoftware === "all" 
+    ? customers 
+    : customers.filter(c => c.software === selectedSoftware);
+
+  const activeCustomers = filteredCustomers.filter(c => c.status === "active").length;
+  const totalCustomers = filteredCustomers.length;
   
-  const totalRevenue = customers.reduce((sum, customer) => {
+  const totalRevenue = filteredCustomers.reduce((sum, customer) => {
     const amount = customer.renewalAmount ? parseFloat(customer.renewalAmount) : 0;
     return sum + amount;
   }, 0);
@@ -32,7 +42,25 @@ export default function Dashboard() {
           <h1 className="text-3xl font-semibold">Dashboard</h1>
           <p className="text-muted-foreground mt-1">Track renewals and manage customer relationships</p>
         </div>
-        <AddCustomerDialog />
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="software-filter" className="text-sm">Filter by Software:</Label>
+            <Select value={selectedSoftware} onValueChange={setSelectedSoftware}>
+              <SelectTrigger id="software-filter" className="w-[280px]" data-testid="select-software-filter">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Software</SelectItem>
+                {SOFTWARE_TYPES.map((software) => (
+                  <SelectItem key={software} value={software}>
+                    {software}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <AddCustomerDialog />
+        </div>
       </div>
 
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -70,13 +98,16 @@ export default function Dashboard() {
               <CardTitle>Recent Customers</CardTitle>
             </CardHeader>
             <CardContent>
-              {customers.length === 0 ? (
+              {filteredCustomers.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  No customers yet. Add your first customer to get started.
+                  {selectedSoftware === "all" 
+                    ? "No customers yet. Add your first customer to get started."
+                    : `No customers found for ${selectedSoftware}.`
+                  }
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {customers.slice(0, 5).map((customer) => (
+                  {filteredCustomers.slice(0, 5).map((customer) => (
                     <div key={customer.id} className="flex items-center justify-between p-3 rounded-md border">
                       <div>
                         <p className="font-medium">{customer.name}</p>

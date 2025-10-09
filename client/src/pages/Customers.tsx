@@ -4,17 +4,25 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Customer } from "@shared/schema";
+import { Customer, SOFTWARE_TYPES } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function Customers() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
 
   const { data: customers = [], isLoading } = useQuery<Customer[]>({
     queryKey: ["/api/customers"],
   });
 
-  const filteredCustomers = customers.filter((customer) =>
+  // Filter by software first, then by search query
+  const softwareFilteredCustomers = selectedSoftware === "all" 
+    ? customers 
+    : customers.filter(c => c.software === selectedSoftware);
+
+  const filteredCustomers = softwareFilteredCustomers.filter((customer) =>
     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     customer.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
     customer.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -30,15 +38,33 @@ export default function Customers() {
         <AddCustomerDialog />
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search customers..."
-          className="pl-9"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          data-testid="input-search-customers"
-        />
+      <div className="flex gap-4">
+        <div className="flex items-center gap-2">
+          <Label htmlFor="customers-software-filter" className="text-sm whitespace-nowrap">Filter by Software:</Label>
+          <Select value={selectedSoftware} onValueChange={setSelectedSoftware}>
+            <SelectTrigger id="customers-software-filter" className="w-[280px]" data-testid="select-customers-software-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Software</SelectItem>
+              {SOFTWARE_TYPES.map((software) => (
+                <SelectItem key={software} value={software}>
+                  {software}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search customers..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            data-testid="input-search-customers"
+          />
+        </div>
       </div>
 
       {isLoading ? (

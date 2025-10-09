@@ -2,19 +2,27 @@ import { Input } from "@/components/ui/input";
 import { Search, DollarSign, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Customer } from "@shared/schema";
+import { Customer, SOFTWARE_TYPES } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function Churn() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
 
   const { data: customers = [], isLoading } = useQuery<Customer[]>({
     queryKey: ["/api/customers"],
   });
 
-  const churnedCustomers = customers.filter((customer) => customer.churn);
+  // Filter by software first, then by churn status
+  const softwareFilteredCustomers = selectedSoftware === "all" 
+    ? customers 
+    : customers.filter(c => c.software === selectedSoftware);
+
+  const churnedCustomers = softwareFilteredCustomers.filter((customer) => customer.churn);
 
   const filteredCustomers = churnedCustomers.filter((customer) =>
     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -34,15 +42,33 @@ export default function Churn() {
         </Badge>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search churned customers..."
-          className="pl-9"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          data-testid="input-search-churn"
-        />
+      <div className="flex gap-4">
+        <div className="flex items-center gap-2">
+          <Label htmlFor="churn-software-filter" className="text-sm whitespace-nowrap">Filter by Software:</Label>
+          <Select value={selectedSoftware} onValueChange={setSelectedSoftware}>
+            <SelectTrigger id="churn-software-filter" className="w-[280px]" data-testid="select-churn-software-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Software</SelectItem>
+              {SOFTWARE_TYPES.map((software) => (
+                <SelectItem key={software} value={software}>
+                  {software}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search churned customers..."
+            className="pl-9"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            data-testid="input-search-churn"
+          />
+        </div>
       </div>
 
       {isLoading ? (
