@@ -23,6 +23,7 @@ export function AddCustomerDialog() {
     email: "",
     company: "",
     accountManager: "",
+    opportunityName: "",
   });
 
   const createMutation = useMutation({
@@ -38,7 +39,7 @@ export function AddCustomerDialog() {
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", accountManager: "" });
+      setFormData({ name: "", email: "", company: "", accountManager: "", opportunityName: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -109,6 +110,16 @@ export function AddCustomerDialog() {
               onChange={(e) => setFormData({ ...formData, accountManager: e.target.value })}
               placeholder="Sarah Johnson"
               data-testid="input-account-manager"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="opportunityName">Opportunity Name</Label>
+            <Input
+              id="opportunityName"
+              value={formData.opportunityName}
+              onChange={(e) => setFormData({ ...formData, opportunityName: e.target.value })}
+              placeholder="Q1 2024 Expansion"
+              data-testid="input-opportunity-name"
             />
           </div>
           <div className="flex justify-end gap-2">
