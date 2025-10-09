@@ -53,11 +53,13 @@ shared/
 - `DELETE /api/customers/:id` - Delete customer
 
 ### Recent Changes (Latest Session)
-- Removed dark mode - application now uses only light mode with ABB branding
-- Removed registration functionality - authentication now uses hardcoded users only
-- Updated authentication system to use three hardcoded users (Anvesh, Stephen, Calvin) with password "viewpoint"
-- Implemented total revenue calculation on Dashboard that aggregates all customer renewal amounts
-- Dashboard Total Revenue card now displays sum of all renewalAmount values in USD format with cents
+- Added software type filtering to organize and manage multiple types of sold software
+- Added software field to customer schema with predefined software types (ABB Ability EDCS, Manufacturing Operations Management, System 800xA, Performance Optimization, Other)
+- Software dropdown added to customer creation and editing forms (required field)
+- Software filter dropdown added to Dashboard, Customers, and Churn pages for filtering data by selected software
+- All metrics (Total Customers, Active Customers, Total Revenue) now filter based on selected software
+- Recent customers list on Dashboard filters by selected software
+- Application name updated from "ViewPoint Watchdog" to "ELSE SaaS Watchdog"
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

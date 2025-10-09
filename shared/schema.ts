@@ -42,12 +42,25 @@ export const notes = pgTable("notes", {
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
+// Software types available in the system
+export const SOFTWARE_TYPES = [
+  "ABB Ability EDCS",
+  "ABB Ability Manufacturing Operations Management",
+  "ABB Ability System 800xA",
+  "ABB Ability Performance Optimization",
+  "Other"
+] as const;
+
+export type SoftwareType = typeof SOFTWARE_TYPES[number];
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
 });
 
-export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true });
+export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true }).extend({
+  software: z.enum(SOFTWARE_TYPES),
+});
 export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true });
 export const insertNoteSchema = createInsertSchema(notes).omit({ id: true, createdAt: true });
 
@@ -62,14 +75,3 @@ export type Subscription = typeof subscriptions.$inferSelect;
 
 export type InsertNote = z.infer<typeof insertNoteSchema>;
 export type Note = typeof notes.$inferSelect;
-
-// Software types available in the system
-export const SOFTWARE_TYPES = [
-  "ABB Ability EDCS",
-  "ABB Ability Manufacturing Operations Management",
-  "ABB Ability System 800xA",
-  "ABB Ability Performance Optimization",
-  "Other"
-] as const;
-
-export type SoftwareType = typeof SOFTWARE_TYPES[number];
