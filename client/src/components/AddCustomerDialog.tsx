@@ -24,6 +24,7 @@ export function AddCustomerDialog() {
     company: "",
     accountManager: "",
     opportunityName: "",
+    renewalAmount: "",
   });
 
   const createMutation = useMutation({
@@ -39,7 +40,7 @@ export function AddCustomerDialog() {
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", accountManager: "", opportunityName: "" });
+      setFormData({ name: "", email: "", company: "", accountManager: "", opportunityName: "", renewalAmount: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -120,6 +121,19 @@ export function AddCustomerDialog() {
               onChange={(e) => setFormData({ ...formData, opportunityName: e.target.value })}
               placeholder="Q1 2024 Expansion"
               data-testid="input-opportunity-name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="renewalAmount">Renewal Amount ($)</Label>
+            <Input
+              id="renewalAmount"
+              type="number"
+              step="0.01"
+              min="0"
+              value={formData.renewalAmount}
+              onChange={(e) => setFormData({ ...formData, renewalAmount: e.target.value })}
+              placeholder="10000.00"
+              data-testid="input-renewal-amount"
             />
           </div>
           <div className="flex justify-end gap-2">
