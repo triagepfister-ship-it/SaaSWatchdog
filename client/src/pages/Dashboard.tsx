@@ -12,6 +12,18 @@ export default function Dashboard() {
 
   const activeCustomers = customers.filter(c => c.status === "active").length;
   const totalCustomers = customers.length;
+  
+  const totalRevenue = customers.reduce((sum, customer) => {
+    const amount = customer.renewalAmount ? parseFloat(customer.renewalAmount) : 0;
+    return sum + amount;
+  }, 0);
+  
+  const formattedRevenue = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(totalRevenue);
 
   return (
     <div className="space-y-6">
@@ -45,7 +57,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Total Revenue"
-          value="$0"
+          value={formattedRevenue}
           change="All subscriptions"
           icon={DollarSign}
         />
