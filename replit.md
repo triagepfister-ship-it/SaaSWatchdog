@@ -80,6 +80,7 @@ shared/
 - Customer form updated: Removed "Account Manager" field
 - Customer schema updated: Replaced accountManager field with site field
 - Customer form updated: Changed "Software" from dropdown to read-only display field
+- Customer form updated: Removed "Customer Name" field - name is now automatically set to company value
 - Authentication updated: Added fourth hardcoded user "Brian" with password "viewpoint"
 - Customer schema updated: Added renewalExpirationDate field (timestamp) with robust validation
 - Customer forms updated: Added "Renewal Expiration Date" input field to both Add and Edit dialogs

@@ -25,7 +25,6 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     company: "",
     software: selectedSoftware !== "all" ? selectedSoftware : "",
@@ -48,7 +47,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const validatedData = insertCustomerSchema.parse(data);
+      const validatedData = insertCustomerSchema.parse({ ...data, name: data.company });
       const res = await apiRequest("POST", "/api/customers", validatedData);
       return await res.json();
     },
@@ -59,7 +58,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", pilotCustomer: false, churn: false, churnReason: "" });
+      setFormData({ email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", pilotCustomer: false, churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -96,17 +95,6 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Customer Name</Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="John Doe"
-                required
-                data-testid="input-customer-name"
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="email">Customer Email</Label>
               <Input
                 id="email"
@@ -118,8 +106,6 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-customer-email"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="company">Company</Label>
               <Input
@@ -131,6 +117,8 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-customer-company"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="software">Software</Label>
               <Input
@@ -141,8 +129,6 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-software"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="site">Site</Label>
               <Input
@@ -153,6 +139,8 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-site"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="opportunityName">Opportunity Name</Label>
               <Input
@@ -163,8 +151,6 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-opportunity-name"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="renewalAmount">Renewal Amount ($)</Label>
               <Input
@@ -178,6 +164,8 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-renewal-amount"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="renewalExpirationDate">Renewal Expiration Date</Label>
               <Input
@@ -188,17 +176,17 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
                 data-testid="input-renewal-expiration-date"
               />
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="responsibleSalesperson">Responsible Salesperson</Label>
-            <Input
-              id="responsibleSalesperson"
-              type="email"
-              value={formData.responsibleSalesperson}
-              onChange={(e) => setFormData({ ...formData, responsibleSalesperson: e.target.value })}
-              placeholder="salesperson@example.com"
-              data-testid="input-responsible-salesperson"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="responsibleSalesperson">Responsible Salesperson</Label>
+              <Input
+                id="responsibleSalesperson"
+                type="email"
+                value={formData.responsibleSalesperson}
+                onChange={(e) => setFormData({ ...formData, responsibleSalesperson: e.target.value })}
+                placeholder="salesperson@example.com"
+                data-testid="input-responsible-salesperson"
+              />
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox

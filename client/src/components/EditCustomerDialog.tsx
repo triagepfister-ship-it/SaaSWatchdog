@@ -24,7 +24,6 @@ interface EditCustomerDialogProps {
 export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustomerDialogProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: customer.name,
     email: customer.email,
     company: customer.company,
     software: customer.software,
@@ -40,7 +39,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
 
   useEffect(() => {
     setFormData({
-      name: customer.name,
       email: customer.email,
       company: customer.company,
       software: customer.software,
@@ -57,7 +55,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const res = await apiRequest("PATCH", `/api/customers/${customer.id}`, data);
+      const res = await apiRequest("PATCH", `/api/customers/${customer.id}`, { ...data, name: data.company });
       return await res.json();
     },
     onSuccess: () => {
@@ -91,16 +89,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Customer Name</Label>
-              <Input
-                id="edit-name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                data-testid="input-edit-customer-name"
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="edit-email">Customer Email</Label>
               <Input
                 id="edit-email"
@@ -111,8 +99,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-customer-email"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-company">Company</Label>
               <Input
@@ -123,6 +109,8 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-customer-company"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-software">Software</Label>
               <Input
@@ -133,8 +121,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-software"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-site">Site</Label>
               <Input
@@ -145,6 +131,8 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-site"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-opportunityName">Opportunity Name</Label>
               <Input
@@ -154,8 +142,6 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-opportunity-name"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-renewalAmount">Renewal Amount ($)</Label>
               <Input
@@ -168,6 +154,8 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-renewal-amount"
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="edit-renewalExpirationDate">Renewal Expiration Date</Label>
               <Input
@@ -178,16 +166,16 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                 data-testid="input-edit-renewal-expiration-date"
               />
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-responsibleSalesperson">Responsible Salesperson</Label>
-            <Input
-              id="edit-responsibleSalesperson"
-              type="email"
-              value={formData.responsibleSalesperson}
-              onChange={(e) => setFormData({ ...formData, responsibleSalesperson: e.target.value })}
-              data-testid="input-edit-responsible-salesperson"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="edit-responsibleSalesperson">Responsible Salesperson</Label>
+              <Input
+                id="edit-responsibleSalesperson"
+                type="email"
+                value={formData.responsibleSalesperson}
+                onChange={(e) => setFormData({ ...formData, responsibleSalesperson: e.target.value })}
+                data-testid="input-edit-responsible-salesperson"
+              />
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
