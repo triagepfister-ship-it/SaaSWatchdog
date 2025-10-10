@@ -96,6 +96,10 @@ shared/
   - Detail view with phase-specific forms and data persistence
 - Customer form updated: Added "Pilot Customer" checkbox to both Add and Edit dialogs
 - Customer schema updated: Added pilotCustomer field (boolean, defaults to false)
+- Dashboard updated: Recent Customers section now displays visual indicators for pilot customers
+  - Light purple background (bg-purple-50) with purple border (border-purple-200)
+  - "Pilot" badge with flag icon displayed next to customer name
+  - Badge styled with purple colors (bg-purple-100, text-purple-700)
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

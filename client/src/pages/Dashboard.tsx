@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
-import { AlertCircle, Users, DollarSign, RefreshCw } from "lucide-react";
+import { AlertCircle, Users, DollarSign, RefreshCw, Flag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Customer, SOFTWARE_TYPES } from "@shared/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
   const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
@@ -116,10 +117,26 @@ export default function Dashboard() {
               ) : (
                 <div className="space-y-2">
                   {filteredCustomers.slice(0, 5).map((customer) => (
-                    <div key={customer.id} className="flex items-center justify-between p-3 rounded-md border">
-                      <div>
-                        <p className="font-medium">{customer.name}</p>
-                        <p className="text-sm text-muted-foreground">{customer.company}</p>
+                    <div 
+                      key={customer.id} 
+                      className={`flex items-center justify-between p-3 rounded-md border ${
+                        customer.pilotCustomer ? 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800' : ''
+                      }`}
+                      data-testid={`recent-customer-${customer.id}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium">{customer.name}</p>
+                            {customer.pilotCustomer && (
+                              <Badge variant="secondary" className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300" data-testid={`pilot-badge-${customer.id}`}>
+                                <Flag className="w-3 h-3 mr-1" />
+                                Pilot
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">{customer.company}</p>
+                        </div>
                       </div>
                       <div className="text-sm text-muted-foreground">{customer.email}</div>
                     </div>
