@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Feedback, FEEDBACK_PHASES } from "@shared/schema";
+import { Feedback, FEEDBACK_PHASES, SOFTWARE_TYPES } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ChevronRight, ArrowLeft } from "lucide-react";
@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
@@ -16,6 +17,7 @@ import { format } from "date-fns";
 export default function FeedbackPage() {
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
   const { toast } = useToast();
   const { user } = useAuth();
   
@@ -28,6 +30,7 @@ export default function FeedbackPage() {
   const [formData, setFormData] = useState({
     customerName: "",
     appName: "",
+    software: "",
     feedbackText: "",
   });
 
@@ -40,7 +43,7 @@ export default function FeedbackPage() {
       await queryClient.invalidateQueries({ queryKey: ["/api/feedback"] });
       setIsCreateDialogOpen(false);
       setSelectedFeedback(newFeedback.id);
-      setFormData({ customerName: "", appName: "", feedbackText: "" });
+      setFormData({ customerName: "", appName: "", software: "", feedbackText: "" });
       toast({
         title: "Success",
         description: "Feedback submitted successfully",
@@ -60,6 +63,7 @@ export default function FeedbackPage() {
     createMutation.mutate({
       customerName: formData.customerName,
       appName: formData.appName,
+      software: formData.software,
       feedbackText: formData.feedbackText,
       phase: "Analyze",
       submittedBy: user?.username || "Unknown",
@@ -80,24 +84,42 @@ export default function FeedbackPage() {
     />;
   }
 
-  const sortedFeedback = [...feedbackList].sort((a, b) => 
+  const filteredFeedback = selectedSoftware === "all" 
+    ? feedbackList 
+    : feedbackList.filter(f => f.software === selectedSoftware);
+
+  const sortedFeedback = [...filteredFeedback].sort((a, b) => 
     new Date(b.submittedDate).getTime() - new Date(a.submittedDate).getTime()
   );
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-semibold">Feedback</h1>
           <p className="text-muted-foreground mt-1">Submit and track customer feedback</p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-submit-feedback">
-              <Plus className="mr-2 h-4 w-4" />
-              Submit Feedback
-            </Button>
-          </DialogTrigger>
+        <div className="flex items-center gap-3">
+          <Select value={selectedSoftware} onValueChange={setSelectedSoftware}>
+            <SelectTrigger className="w-[180px]" data-testid="select-software-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Software</SelectItem>
+              {SOFTWARE_TYPES.map((software) => (
+                <SelectItem key={software} value={software}>
+                  {software}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button data-testid="button-submit-feedback">
+                <Plus className="mr-2 h-4 w-4" />
+                Submit Feedback
+              </Button>
+            </DialogTrigger>
           <DialogContent data-testid="dialog-submit-feedback">
             <DialogHeader>
               <DialogTitle>Submit Customer Feedback</DialogTitle>
@@ -126,6 +148,24 @@ export default function FeedbackPage() {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="software">Software</Label>
+                <Select
+                  value={formData.software}
+                  onValueChange={(value) => setFormData({ ...formData, software: value })}
+                >
+                  <SelectTrigger id="software" data-testid="select-software">
+                    <SelectValue placeholder="Select software" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SOFTWARE_TYPES.map((software) => (
+                      <SelectItem key={software} value={software}>
+                        {software}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="feedbackText">Feedback</Label>
                 <Textarea
                   id="feedbackText"
@@ -148,6 +188,7 @@ export default function FeedbackPage() {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {sortedFeedback.length === 0 ? (
