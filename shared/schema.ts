@@ -93,6 +93,7 @@ export const feedback = pgTable("feedback", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   customerName: text("customer_name").notNull(),
   appName: text("app_name").notNull(),
+  software: text("software").notNull(),
   feedbackText: text("feedback_text").notNull(),
   phase: text("phase").notNull().default("Analyze"),
   submittedBy: text("submitted_by").notNull(),
@@ -167,6 +168,7 @@ export const insertFeedbackSchema = createInsertSchema(feedback).omit({
   submittedDate: true 
 }).extend({
   phase: z.enum(FEEDBACK_PHASES),
+  software: z.enum(SOFTWARE_TYPES),
   analysis: z.string().nullable().optional(),
   implementationPlan: z.string().nullable().optional(),
   implementationNotes: z.string().nullable().optional(),
