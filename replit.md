@@ -11,6 +11,7 @@ The application is in active development with the following features implemented
 - **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
 - **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
 - **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
+- **Feedback System**: Form-based customer feedback submission with multi-phase workflow (Initiate → Analyze → Implementation → Closed)
 - **ABB Branding**: Application uses ABB LTD corporate color scheme (ABB Red #FF000F) with light mode theme
 - **Responsive Design**: Mobile-friendly interface with sidebar navigation
 
@@ -63,6 +64,13 @@ shared/
 - `PATCH /api/lessons-learned/:id` - Update lessons learned workflow (phase transitions, data updates)
 - `DELETE /api/lessons-learned/:id` - Delete lessons learned workflow
 
+**Feedback:**
+- `GET /api/feedback` - List all feedback submissions
+- `GET /api/feedback/:id` - Get specific feedback
+- `POST /api/feedback` - Submit new feedback
+- `PATCH /api/feedback/:id` - Update feedback (phase transitions, data updates)
+- `DELETE /api/feedback/:id` - Delete feedback
+
 ### Recent Changes (Latest Session)
 - Added software type filtering to organize and manage multiple types of sold software
 - Added software field to customer schema with predefined software types (Uptime360, ViewPoint)
@@ -109,6 +117,19 @@ shared/
   - Revenue amount shown prominently on the right side (formatted as USD currency)
   - Email displayed below revenue amount as secondary information
   - Left side shows customer name (with pilot badge if applicable) and company
+- **Feedback Feature**: Complete form-based customer feedback system with multi-phase workflow
+  - Form-based submission with customerName, appName, and feedbackText fields
+  - New submissions automatically start in "Analyze" phase (bypasses Initiate phase)
+  - Workflow phases: Initiate → Analyze → Implementation → Closed
+  - Analyze phase: Document analysis of customer feedback
+  - Implementation phase: Create implementation plan and track progress notes
+  - Closed phase: Document final outcome with automatic closure tracking (closedDate, closedBy)
+  - Grid layout displaying feedback submissions sorted by submission date (newest first)
+  - Each card displays: Customer Name, App Name, Feedback (truncated), Current Phase, Submission Date
+  - Detail view with phase-specific forms and data persistence
+  - Phase navigation bar with visual indicators and restricted forward progression
+  - Responsive grid: 1 column on mobile, 2 on large screens, 3 on extra large screens
+  - Feedback accessible via sidebar navigation with MessageSquare icon
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
