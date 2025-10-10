@@ -62,6 +62,16 @@ export const LESSONS_LEARNED_PHASES = [
 
 export type LessonsLearnedPhase = typeof LESSONS_LEARNED_PHASES[number];
 
+// Feedback phases
+export const FEEDBACK_PHASES = [
+  "Initiate",
+  "Analyze",
+  "Implementation",
+  "Closed"
+] as const;
+
+export type FeedbackPhase = typeof FEEDBACK_PHASES[number];
+
 export const lessonsLearned = pgTable("lessons_learned", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
@@ -72,6 +82,22 @@ export const lessonsLearned = pgTable("lessons_learned", {
   initiatedBy: text("initiated_by").notNull(),
   initiatedDate: timestamp("initiated_date").notNull().default(sql`now()`),
   rootCauseAnalysis: text("root_cause_analysis"),
+  implementationPlan: text("implementation_plan"),
+  implementationNotes: text("implementation_notes"),
+  closedDate: timestamp("closed_date"),
+  closedBy: text("closed_by"),
+  outcome: text("outcome"),
+});
+
+export const feedback = pgTable("feedback", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerName: text("customer_name").notNull(),
+  appName: text("app_name").notNull(),
+  feedbackText: text("feedback_text").notNull(),
+  phase: text("phase").notNull().default("Analyze"),
+  submittedBy: text("submitted_by").notNull(),
+  submittedDate: timestamp("submitted_date").notNull().default(sql`now()`),
+  analysis: text("analysis"),
   implementationPlan: text("implementation_plan"),
   implementationNotes: text("implementation_notes"),
   closedDate: timestamp("closed_date"),
@@ -135,3 +161,25 @@ export type Note = typeof notes.$inferSelect;
 
 export type InsertLessonsLearned = z.infer<typeof insertLessonsLearnedSchema>;
 export type LessonsLearned = typeof lessonsLearned.$inferSelect;
+
+export const insertFeedbackSchema = createInsertSchema(feedback).omit({ 
+  id: true, 
+  submittedDate: true 
+}).extend({
+  phase: z.enum(FEEDBACK_PHASES),
+  analysis: z.string().nullable().optional(),
+  implementationPlan: z.string().nullable().optional(),
+  implementationNotes: z.string().nullable().optional(),
+  closedDate: z.preprocess(
+    (val) => {
+      if (!val || (typeof val === 'string' && val.trim() === "")) return null;
+      return val;
+    },
+    z.coerce.date().nullable().optional()
+  ),
+  closedBy: z.string().nullable().optional(),
+  outcome: z.string().nullable().optional(),
+});
+
+export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+export type Feedback = typeof feedback.$inferSelect;
