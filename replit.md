@@ -120,7 +120,11 @@ shared/
 - **Feedback Feature**: Complete form-based customer feedback system with multi-phase workflow
   - Form-based submission with customerName, appName, software, and feedbackText fields
   - Software field (Uptime360/ViewPoint) required for categorization and filtering
-  - Client-side validation ensures software is selected before submission
+  - App Name field is a dropdown lookup based on selected software type:
+    - Uptime360 apps: Mobile App, Web Portal, Desktop Client, API Integration
+    - ViewPoint apps: Analytics Dashboard, Reporting Suite, Admin Console, Customer Portal
+  - App Name dropdown is disabled until software is selected
+  - Client-side validation ensures both software and app name are selected before submission
   - Software filter dropdown on Feedback page filters submissions by selected software type
   - New submissions automatically start in "Analyze" phase (bypasses Initiate phase)
   - Workflow phases: Initiate → Analyze → Implementation → Closed
