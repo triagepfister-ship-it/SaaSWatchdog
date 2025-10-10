@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { insertCustomerSchema, insertLessonsLearnedSchema } from "@shared/schema";
+import { insertCustomerSchema, insertLessonsLearnedSchema, insertFeedbackSchema } from "@shared/schema";
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
@@ -93,6 +93,51 @@ export function registerRoutes(app: Express): Server {
   app.delete("/api/lessons-learned/:id", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     const success = await storage.deleteLessonsLearned(req.params.id);
+    if (!success) return res.sendStatus(404);
+    res.sendStatus(204);
+  });
+
+  // Feedback CRUD routes
+  app.get("/api/feedback", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const feedback = await storage.getAllFeedback();
+    res.json(feedback);
+  });
+
+  app.get("/api/feedback/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const feedback = await storage.getFeedback(req.params.id);
+    if (!feedback) return res.sendStatus(404);
+    res.json(feedback);
+  });
+
+  app.post("/api/feedback", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    try {
+      const validatedData = insertFeedbackSchema.parse(req.body);
+      const feedback = await storage.createFeedback(validatedData);
+      res.status(201).json(feedback);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid feedback data" });
+    }
+  });
+
+  app.patch("/api/feedback/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    try {
+      const partialFeedbackSchema = insertFeedbackSchema.partial();
+      const validatedData = partialFeedbackSchema.parse(req.body);
+      const feedback = await storage.updateFeedback(req.params.id, validatedData);
+      if (!feedback) return res.sendStatus(404);
+      res.json(feedback);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid feedback data" });
+    }
+  });
+
+  app.delete("/api/feedback/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const success = await storage.deleteFeedback(req.params.id);
     if (!success) return res.sendStatus(404);
     res.sendStatus(204);
   });
