@@ -30,12 +30,14 @@ export default function Customers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold">Customers</h1>
-          <p className="text-muted-foreground mt-1">Manage your customer relationships</p>
+      <div>
+        <div className="flex items-center gap-3 flex-wrap">
+          <div>
+            <h1 className="text-3xl font-semibold">Customers</h1>
+          </div>
+          <AddCustomerDialog selectedSoftware={selectedSoftware} />
         </div>
-        <AddCustomerDialog selectedSoftware={selectedSoftware} />
+        <p className="text-muted-foreground mt-1">Manage your customer relationships</p>
       </div>
 
       <div className="flex gap-4">
