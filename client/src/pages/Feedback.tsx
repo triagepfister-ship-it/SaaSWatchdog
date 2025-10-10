@@ -60,6 +60,16 @@ export default function FeedbackPage() {
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.software) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a software type",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     createMutation.mutate({
       customerName: formData.customerName,
       appName: formData.appName,
