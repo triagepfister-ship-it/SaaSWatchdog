@@ -92,7 +92,6 @@ export const lessonsLearned = pgTable("lessons_learned", {
 export const feedback = pgTable("feedback", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   customerName: text("customer_name").notNull(),
-  appName: text("app_name").notNull(),
   software: text("software").notNull(),
   feedbackText: text("feedback_text").notNull(),
   phase: text("phase").notNull().default("Analyze"),
