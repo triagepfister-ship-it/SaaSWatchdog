@@ -116,31 +116,44 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {filteredCustomers.slice(0, 5).map((customer) => (
-                    <div 
-                      key={customer.id} 
-                      className={`flex items-center justify-between p-3 rounded-md border ${
-                        customer.pilotCustomer ? 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800' : ''
-                      }`}
-                      data-testid={`recent-customer-${customer.id}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium">{customer.name}</p>
-                            {customer.pilotCustomer && (
-                              <Badge variant="secondary" className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300" data-testid={`pilot-badge-${customer.id}`}>
-                                <Flag className="w-3 h-3 mr-1" />
-                                Pilot
-                              </Badge>
-                            )}
+                  {filteredCustomers.slice(0, 5).map((customer) => {
+                    const revenue = customer.renewalAmount ? parseFloat(customer.renewalAmount) : 0;
+                    const formattedCustomerRevenue = new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(revenue);
+                    
+                    return (
+                      <div 
+                        key={customer.id} 
+                        className={`flex items-center justify-between p-3 rounded-md border ${
+                          customer.pilotCustomer ? 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800' : ''
+                        }`}
+                        data-testid={`recent-customer-${customer.id}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{customer.name}</p>
+                              {customer.pilotCustomer && (
+                                <Badge variant="secondary" className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300" data-testid={`pilot-badge-${customer.id}`}>
+                                  <Flag className="w-3 h-3 mr-1" />
+                                  Pilot
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">{customer.company}</p>
                           </div>
-                          <p className="text-sm text-muted-foreground">{customer.company}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium" data-testid={`customer-revenue-${customer.id}`}>{formattedCustomerRevenue}</p>
+                          <p className="text-sm text-muted-foreground">{customer.email}</p>
                         </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">{customer.email}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

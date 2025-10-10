@@ -99,9 +99,13 @@ shared/
 - Customer form updated: Added "Pilot Customer" checkbox to both Add and Edit dialogs
 - Customer schema updated: Added pilotCustomer field (boolean, defaults to false)
 - Dashboard updated: Recent Customers section now displays visual indicators for pilot customers
-  - Light purple background (bg-purple-50) with purple border (border-purple-200)
+  - Light purple background (bg-purple-50/dark:bg-purple-950) with purple border (border-purple-200/dark:border-purple-800)
   - "Pilot" badge with flag icon displayed next to customer name
-  - Badge styled with purple colors (bg-purple-100, text-purple-700)
+  - Badge styled with purple colors (bg-purple-100/dark:bg-purple-900, text-purple-700/dark:text-purple-300)
+- Dashboard updated: Recent Customers section now displays revenue amounts
+  - Revenue amount shown prominently on the right side (formatted as USD currency)
+  - Email displayed below revenue amount as secondary information
+  - Left side shows customer name (with pilot badge if applicable) and company
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
