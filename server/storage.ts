@@ -1,4 +1,4 @@
-import { type Customer, type InsertCustomer, type Subscription, type InsertSubscription, type Note, type InsertNote, type User, type InsertUser, type LessonsLearned, type InsertLessonsLearned } from "@shared/schema";
+import { type Customer, type InsertCustomer, type Subscription, type InsertSubscription, type Note, type InsertNote, type User, type InsertUser, type LessonsLearned, type InsertLessonsLearned, type Feedback, type InsertFeedback } from "@shared/schema";
 import { randomUUID } from "crypto";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -32,6 +32,12 @@ export interface IStorage {
   updateLessonsLearned(id: string, lessonsLearned: Partial<InsertLessonsLearned>): Promise<LessonsLearned | undefined>;
   deleteLessonsLearned(id: string): Promise<boolean>;
   
+  getFeedback(id: string): Promise<Feedback | undefined>;
+  getAllFeedback(): Promise<Feedback[]>;
+  createFeedback(feedback: InsertFeedback): Promise<Feedback>;
+  updateFeedback(id: string, feedback: Partial<InsertFeedback>): Promise<Feedback | undefined>;
+  deleteFeedback(id: string): Promise<boolean>;
+  
   sessionStore: Store;
 }
 
@@ -41,6 +47,7 @@ export class MemStorage implements IStorage {
   private subscriptions: Map<string, Subscription>;
   private notes: Map<string, Note>;
   private lessonsLearned: Map<string, LessonsLearned>;
+  private feedback: Map<string, Feedback>;
   public sessionStore: Store;
 
   constructor() {
@@ -49,6 +56,7 @@ export class MemStorage implements IStorage {
     this.subscriptions = new Map();
     this.notes = new Map();
     this.lessonsLearned = new Map();
+    this.feedback = new Map();
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
@@ -219,6 +227,55 @@ export class MemStorage implements IStorage {
 
   async deleteLessonsLearned(id: string): Promise<boolean> {
     return this.lessonsLearned.delete(id);
+  }
+
+  async getFeedback(id: string): Promise<Feedback | undefined> {
+    return this.feedback.get(id);
+  }
+
+  async getAllFeedback(): Promise<Feedback[]> {
+    return Array.from(this.feedback.values());
+  }
+
+  async createFeedback(insertFeedback: InsertFeedback): Promise<Feedback> {
+    const id = randomUUID();
+    const submittedDate = new Date();
+    const feedback: Feedback = {
+      ...insertFeedback,
+      id,
+      submittedDate,
+      analysis: insertFeedback.analysis ?? null,
+      implementationPlan: insertFeedback.implementationPlan ?? null,
+      implementationNotes: insertFeedback.implementationNotes ?? null,
+      closedDate: insertFeedback.closedDate ?? null,
+      closedBy: insertFeedback.closedBy ?? null,
+      outcome: insertFeedback.outcome ?? null,
+    };
+    this.feedback.set(id, feedback);
+    return feedback;
+  }
+
+  async updateFeedback(id: string, updates: Partial<InsertFeedback>): Promise<Feedback | undefined> {
+    const existing = this.feedback.get(id);
+    if (!existing) return undefined;
+
+    const updated: Feedback = {
+      ...existing,
+      ...updates,
+      id,
+      analysis: updates.analysis !== undefined ? updates.analysis ?? null : existing.analysis,
+      implementationPlan: updates.implementationPlan !== undefined ? updates.implementationPlan ?? null : existing.implementationPlan,
+      implementationNotes: updates.implementationNotes !== undefined ? updates.implementationNotes ?? null : existing.implementationNotes,
+      closedDate: updates.closedDate !== undefined ? updates.closedDate ?? null : existing.closedDate,
+      closedBy: updates.closedBy !== undefined ? updates.closedBy ?? null : existing.closedBy,
+      outcome: updates.outcome !== undefined ? updates.outcome ?? null : existing.outcome,
+    };
+    this.feedback.set(id, updated);
+    return updated;
+  }
+
+  async deleteFeedback(id: string): Promise<boolean> {
+    return this.feedback.delete(id);
   }
 }
 
