@@ -14,6 +14,11 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { format } from "date-fns";
 
+const APP_NAMES = {
+  "Uptime360": ["Mobile App", "Web Portal", "Desktop Client", "API Integration"],
+  "ViewPoint": ["Analytics Dashboard", "Reporting Suite", "Admin Console", "Customer Portal"],
+};
+
 export default function FeedbackPage() {
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -65,6 +70,15 @@ export default function FeedbackPage() {
       toast({
         title: "Validation Error",
         description: "Please select a software type",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!formData.appName) {
+      toast({
+        title: "Validation Error",
+        description: "Please select an app name",
         variant: "destructive",
       });
       return;
@@ -147,21 +161,12 @@ export default function FeedbackPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="appName">App Name</Label>
-                <Input
-                  id="appName"
-                  value={formData.appName}
-                  onChange={(e) => setFormData({ ...formData, appName: e.target.value })}
-                  placeholder="Enter app name"
-                  required
-                  data-testid="input-app-name"
-                />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="software">Software</Label>
                 <Select
                   value={formData.software}
-                  onValueChange={(value) => setFormData({ ...formData, software: value })}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, software: value, appName: "" });
+                  }}
                 >
                   <SelectTrigger id="software" data-testid="select-software">
                     <SelectValue placeholder="Select software" />
@@ -170,6 +175,25 @@ export default function FeedbackPage() {
                     {SOFTWARE_TYPES.map((software) => (
                       <SelectItem key={software} value={software}>
                         {software}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="appName">App Name</Label>
+                <Select
+                  value={formData.appName}
+                  onValueChange={(value) => setFormData({ ...formData, appName: value })}
+                  disabled={!formData.software}
+                >
+                  <SelectTrigger id="appName" data-testid="select-app-name">
+                    <SelectValue placeholder={formData.software ? "Select app name" : "Select software first"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {formData.software && APP_NAMES[formData.software as keyof typeof APP_NAMES]?.map((appName) => (
+                      <SelectItem key={appName} value={appName}>
+                        {appName}
                       </SelectItem>
                     ))}
                   </SelectContent>
