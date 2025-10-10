@@ -118,7 +118,10 @@ shared/
   - Email displayed below revenue amount as secondary information
   - Left side shows customer name (with pilot badge if applicable) and company
 - **Feedback Feature**: Complete form-based customer feedback system with multi-phase workflow
-  - Form-based submission with customerName, appName, and feedbackText fields
+  - Form-based submission with customerName, appName, software, and feedbackText fields
+  - Software field (Uptime360/ViewPoint) required for categorization and filtering
+  - Client-side validation ensures software is selected before submission
+  - Software filter dropdown on Feedback page filters submissions by selected software type
   - New submissions automatically start in "Analyze" phase (bypasses Initiate phase)
   - Workflow phases: Initiate → Analyze → Implementation → Closed
   - Analyze phase: Document analysis of customer feedback
