@@ -66,7 +66,7 @@ export const lessonsLearned = pgTable("lessons_learned", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
   description: text("description"),
-  phase: text("phase").notNull().default("Initiate"),
+  phase: text("phase").notNull().default("Root Cause Analysis"),
   customerId: varchar("customer_id").references(() => customers.id),
   software: text("software"),
   initiatedBy: text("initiated_by").notNull(),

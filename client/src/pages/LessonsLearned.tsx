@@ -65,7 +65,7 @@ export default function LessonsLearnedPage() {
     createMutation.mutate({
       title: formData.title,
       description: formData.description || null,
-      phase: "Initiate",
+      phase: "Root Cause Analysis",
       software: formData.software === "none" ? null : formData.software,
       customerId: formData.customerId === "none" ? null : formData.customerId,
       initiatedBy: user?.username || "Unknown",

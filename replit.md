@@ -88,8 +88,9 @@ shared/
 - Customer forms updated: Reorganized fields into two-column grid layout for better screen utilization
 - **Lessons Learned Feature**: Complete workflow management system with 4 linear phases
   - Phase navigation bar with visual indicators and restricted forward progression
-  - Initiate phase: Create workflow with title, description, software, and related customer
-  - Root Cause Analysis phase: Document findings and analysis
+  - New workflows start in "Root Cause Analysis" phase (skips Initiate)
+  - Initiate phase: Available for reference but not used as initial phase
+  - Root Cause Analysis phase: Document findings and analysis (initial phase for new workflows)
   - Implementation phase: Track implementation plan and progress notes
   - Closed phase: Document final outcome with automatic closure tracking
   - List view showing all workflows with phase badges and quick access
