@@ -383,10 +383,6 @@ function FeedbackDetailView({ feedback, onBack }: { feedback: Feedback; onBack: 
             <p className="font-medium" data-testid="text-customer-name">{feedback.customerName}</p>
           </div>
           <div>
-            <Label className="text-muted-foreground">App</Label>
-            <p className="font-medium" data-testid="text-app-name">{feedback.appName}</p>
-          </div>
-          <div>
             <Label className="text-muted-foreground">Feedback</Label>
             <p className="mt-1" data-testid="text-feedback-text">{feedback.feedbackText}</p>
           </div>
