@@ -94,6 +94,8 @@ shared/
   - Closed phase: Document final outcome with automatic closure tracking
   - List view showing all workflows with phase badges and quick access
   - Detail view with phase-specific forms and data persistence
+- Customer form updated: Added "Pilot Customer" checkbox to both Add and Edit dialogs
+- Customer schema updated: Added pilotCustomer field (boolean, defaults to false)
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)

@@ -89,6 +89,7 @@ export class MemStorage implements IStorage {
       renewalAmount: (insertCustomer.renewalAmount !== undefined && insertCustomer.renewalAmount !== null && insertCustomer.renewalAmount.toString().trim() !== "") ? insertCustomer.renewalAmount : null,
       renewalExpirationDate: insertCustomer.renewalExpirationDate ?? null,
       responsibleSalesperson: insertCustomer.responsibleSalesperson && insertCustomer.responsibleSalesperson.trim() !== "" ? insertCustomer.responsibleSalesperson : null,
+      pilotCustomer: insertCustomer.pilotCustomer ?? false,
       churn: insertCustomer.churn ?? false,
       churnReason: insertCustomer.churnReason && insertCustomer.churnReason.trim() !== "" ? insertCustomer.churnReason : null,
       status: insertCustomer.status ?? "active"
@@ -110,6 +111,7 @@ export class MemStorage implements IStorage {
       renewalAmount: updates.renewalAmount !== undefined ? (updates.renewalAmount !== null && updates.renewalAmount.toString().trim() !== "" ? updates.renewalAmount : null) : existing.renewalAmount,
       renewalExpirationDate: updates.renewalExpirationDate !== undefined ? updates.renewalExpirationDate : existing.renewalExpirationDate,
       responsibleSalesperson: updates.responsibleSalesperson !== undefined ? (updates.responsibleSalesperson && updates.responsibleSalesperson.trim() !== "" ? updates.responsibleSalesperson : null) : existing.responsibleSalesperson,
+      pilotCustomer: updates.pilotCustomer !== undefined ? updates.pilotCustomer : existing.pilotCustomer,
       churn: updates.churn !== undefined ? updates.churn : existing.churn,
       churnReason: updates.churnReason !== undefined ? (updates.churnReason && updates.churnReason.trim() !== "" ? updates.churnReason : null) : existing.churnReason,
     };

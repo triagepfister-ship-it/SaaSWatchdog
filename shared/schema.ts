@@ -20,6 +20,7 @@ export const customers = pgTable("customers", {
   renewalAmount: decimal("renewal_amount", { precision: 10, scale: 2 }),
   renewalExpirationDate: timestamp("renewal_expiration_date"),
   responsibleSalesperson: text("responsible_salesperson"),
+  pilotCustomer: boolean("pilot_customer").notNull().default(false),
   churn: boolean("churn").notNull().default(false),
   churnReason: text("churn_reason"),
   status: text("status").notNull().default("active"),

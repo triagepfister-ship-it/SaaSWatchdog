@@ -33,6 +33,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     renewalAmount: customer.renewalAmount || "",
     renewalExpirationDate: customer.renewalExpirationDate ? new Date(customer.renewalExpirationDate).toISOString().split('T')[0] : "",
     responsibleSalesperson: customer.responsibleSalesperson || "",
+    pilotCustomer: customer.pilotCustomer,
     churn: customer.churn,
     churnReason: customer.churnReason || "",
   });
@@ -48,6 +49,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       renewalAmount: customer.renewalAmount || "",
       renewalExpirationDate: customer.renewalExpirationDate ? new Date(customer.renewalExpirationDate).toISOString().split('T')[0] : "",
       responsibleSalesperson: customer.responsibleSalesperson || "",
+      pilotCustomer: customer.pilotCustomer,
       churn: customer.churn,
       churnReason: customer.churnReason || "",
     });
@@ -186,6 +188,17 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
               onChange={(e) => setFormData({ ...formData, responsibleSalesperson: e.target.value })}
               data-testid="input-edit-responsible-salesperson"
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="edit-pilotCustomer"
+              checked={formData.pilotCustomer}
+              onCheckedChange={(checked) => setFormData({ ...formData, pilotCustomer: checked as boolean })}
+              data-testid="checkbox-edit-pilot-customer"
+            />
+            <Label htmlFor="edit-pilotCustomer" className="cursor-pointer">
+              Pilot Customer
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox

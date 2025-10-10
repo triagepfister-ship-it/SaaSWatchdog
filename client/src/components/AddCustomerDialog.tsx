@@ -34,6 +34,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
     renewalAmount: "",
     renewalExpirationDate: "",
     responsibleSalesperson: "",
+    pilotCustomer: false,
     churn: false,
     churnReason: "",
   });
@@ -58,7 +59,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", churn: false, churnReason: "" });
+      setFormData({ name: "", email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", pilotCustomer: false, churn: false, churnReason: "" });
     },
     onError: (error: Error) => {
       toast({
@@ -198,6 +199,17 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
               placeholder="salesperson@example.com"
               data-testid="input-responsible-salesperson"
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="pilotCustomer"
+              checked={formData.pilotCustomer}
+              onCheckedChange={(checked) => setFormData({ ...formData, pilotCustomer: checked as boolean })}
+              data-testid="checkbox-pilot-customer"
+            />
+            <Label htmlFor="pilotCustomer" className="cursor-pointer">
+              Pilot Customer
+            </Label>
           </div>
           <div className="flex items-center space-x-2">
             <Checkbox
