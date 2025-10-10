@@ -94,7 +94,10 @@ shared/
   - Root Cause Analysis phase: Document findings and analysis (initial phase for new workflows)
   - Implementation phase: Track implementation plan and progress notes
   - Closed phase: Document final outcome with automatic closure tracking
-  - List view showing all workflows with phase badges and quick access
+  - Grid layout displaying workflows with GUID numbers (6-digit format starting from 000001)
+  - Each card displays: GUID, Customer, Description, Root Cause Analysis, Implementation Details
+  - GUIDs are assigned chronologically based on initiated date
+  - Responsive grid: 1 column on mobile, 2 on large screens, 3 on extra large screens
   - Detail view with phase-specific forms and data persistence
 - Customer form updated: Added "Pilot Customer" checkbox to both Add and Edit dialogs
 - Customer schema updated: Added pilotCustomer field (boolean, defaults to false)

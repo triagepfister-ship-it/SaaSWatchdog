@@ -171,41 +171,56 @@ export default function LessonsLearnedPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4">
-        {lessonsLearned.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">No lessons learned workflows yet. Create one to get started.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          lessonsLearned.map((lesson) => (
-            <Card 
-              key={lesson.id} 
-              className="cursor-pointer hover-elevate" 
-              onClick={() => setSelectedLesson(lesson.id)}
-              data-testid={`card-lesson-${lesson.id}`}
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{lesson.title}</CardTitle>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm px-3 py-1 rounded-md bg-primary/10 text-primary font-medium">
-                      {lesson.phase}
-                    </span>
-                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                </div>
-              </CardHeader>
-              {lesson.description && (
-                <CardContent>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{lesson.description}</p>
-                </CardContent>
-              )}
-            </Card>
-          ))
-        )}
-      </div>
+      {lessonsLearned.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-muted-foreground">No lessons learned workflows yet. Create one to get started.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+          {[...lessonsLearned]
+            .sort((a, b) => new Date(a.initiatedDate).getTime() - new Date(b.initiatedDate).getTime())
+            .map((lesson, index) => {
+              const guid = String(index + 1).padStart(6, '0');
+              const customer = customers.find(c => c.id === lesson.customerId);
+              
+              return (
+                <Card 
+                  key={lesson.id} 
+                  className="cursor-pointer hover-elevate" 
+                  onClick={() => setSelectedLesson(lesson.id)}
+                  data-testid={`card-lesson-${lesson.id}`}
+                >
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">#{guid}</CardTitle>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Customer</p>
+                      <p className="text-sm">{customer ? `${customer.name} - ${customer.company}` : 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Description</p>
+                      <p className="text-sm line-clamp-2">{lesson.description || 'No description'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Root Cause Analysis</p>
+                      <p className="text-sm line-clamp-2">{lesson.rootCauseAnalysis || 'Not completed'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Implementation Details</p>
+                      <p className="text-sm line-clamp-2">{lesson.implementationPlan || 'Not completed'}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+        </div>
+      )}
     </div>
   );
 }
