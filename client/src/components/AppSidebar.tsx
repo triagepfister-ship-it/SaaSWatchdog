@@ -7,6 +7,7 @@ import {
   Settings,
   AlertCircle,
   Lightbulb,
+  MessageSquare,
 } from "lucide-react";
 import {
   Sidebar,
@@ -26,6 +27,7 @@ const menuItems = [
   { title: "Churn", url: "/churn", icon: AlertCircle },
   { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Lessons Learned", url: "/lessons-learned", icon: Lightbulb },
+  { title: "Feedback", url: "/feedback", icon: MessageSquare },
   { title: "Notifications", url: "/notifications", icon: Bell },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
