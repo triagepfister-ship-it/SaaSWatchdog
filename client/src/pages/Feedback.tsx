@@ -14,11 +14,6 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { format } from "date-fns";
 
-const APP_NAMES = {
-  "Uptime360": ["Mobile App", "Web Portal", "Desktop Client", "API Integration"],
-  "ViewPoint": ["Analytics Dashboard", "Reporting Suite", "Admin Console", "Customer Portal"],
-};
-
 export default function FeedbackPage() {
   const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -34,7 +29,6 @@ export default function FeedbackPage() {
 
   const [formData, setFormData] = useState({
     customerName: "",
-    appName: "",
     software: "",
     feedbackText: "",
   });
@@ -48,7 +42,7 @@ export default function FeedbackPage() {
       await queryClient.invalidateQueries({ queryKey: ["/api/feedback"] });
       setIsCreateDialogOpen(false);
       setSelectedFeedback(newFeedback.id);
-      setFormData({ customerName: "", appName: "", software: "", feedbackText: "" });
+      setFormData({ customerName: "", software: "", feedbackText: "" });
       toast({
         title: "Success",
         description: "Feedback submitted successfully",
@@ -75,18 +69,8 @@ export default function FeedbackPage() {
       return;
     }
     
-    if (!formData.appName) {
-      toast({
-        title: "Validation Error",
-        description: "Please select an app name",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     createMutation.mutate({
       customerName: formData.customerName,
-      appName: formData.appName,
       software: formData.software,
       feedbackText: formData.feedbackText,
       phase: "Analyze",
@@ -165,7 +149,7 @@ export default function FeedbackPage() {
                 <Select
                   value={formData.software}
                   onValueChange={(value) => {
-                    setFormData({ ...formData, software: value, appName: "" });
+                    setFormData({ ...formData, software: value });
                   }}
                 >
                   <SelectTrigger id="software" data-testid="select-software">
@@ -175,25 +159,6 @@ export default function FeedbackPage() {
                     {SOFTWARE_TYPES.map((software) => (
                       <SelectItem key={software} value={software}>
                         {software}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="appName">App Name</Label>
-                <Select
-                  value={formData.appName}
-                  onValueChange={(value) => setFormData({ ...formData, appName: value })}
-                  disabled={!formData.software}
-                >
-                  <SelectTrigger id="appName" data-testid="select-app-name">
-                    <SelectValue placeholder={formData.software ? "Select app name" : "Select software first"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {formData.software && APP_NAMES[formData.software as keyof typeof APP_NAMES]?.map((appName) => (
-                      <SelectItem key={appName} value={appName}>
-                        {appName}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -254,10 +219,6 @@ export default function FeedbackPage() {
                 </p>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">App</p>
-                  <p className="text-sm" data-testid={`text-app-${feedback.id}`}>{feedback.appName}</p>
-                </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Feedback</p>
                   <p className="text-sm line-clamp-3" data-testid={`text-feedback-${feedback.id}`}>
