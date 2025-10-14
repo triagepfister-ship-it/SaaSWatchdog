@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { insertUserSchema, type InsertUser, type User } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { Trash2, Plus, Eye, EyeOff, ShieldX } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   AlertDialog,
@@ -32,8 +32,12 @@ export default function Settings() {
   const { toast } = useToast();
   const { user: currentUser } = useAuth();
 
-  const { data: users = [], isLoading } = useQuery<Omit<User, "password">[]>({
+  // Check if current user has admin access
+  const isUserAdmin = currentUser?.username === "Stephen" || currentUser?.username === "Anvesh";
+
+  const { data: users = [], isLoading, error } = useQuery<Omit<User, "password">[]>({
     queryKey: ["/api/users"],
+    enabled: isUserAdmin, // Only fetch if user has admin access
   });
 
   const addForm = useForm<InsertUser>({
@@ -142,6 +146,27 @@ export default function Settings() {
       password: "",
     });
   };
+
+  // Show access denied message if user is not authorized
+  if (!isUserAdmin) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-semibold">Settings</h1>
+          <p className="text-muted-foreground mt-1">Manage user access and credentials</p>
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <ShieldX className="h-16 w-16 text-muted-foreground mb-4" />
+            <h2 className="text-xl font-semibold mb-2" data-testid="text-access-denied">Access Denied</h2>
+            <p className="text-muted-foreground text-center max-w-md">
+              User management is restricted to Stephen and Anvesh only. You do not have permission to access this feature.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
