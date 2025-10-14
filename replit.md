@@ -8,12 +8,15 @@ The application is in active development with the following features implemented
 
 ### Completed Features
 - **Authentication System**: Storage-based user authentication with session management, initialized with 5 default users (Anvesh, Stephen, Calvin, Brian, Steve - all with password "viewpoint")
-- **User Access Management**: Complete user management system in Settings page
+- **User Access Management**: Complete user management system in Settings page (restricted to Stephen and Anvesh only)
   - Create, update, and delete user credentials
   - Username uniqueness validation
   - Prevent self-deletion protection
   - Password show/hide toggle for security
   - Real-time user list with current user indicator
+  - Access control: Only Stephen and Anvesh can access user management
+  - Settings hidden from sidebar for unauthorized users
+  - Access denied message shown to unauthorized users
 - **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
 - **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
 - **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
@@ -84,6 +87,13 @@ shared/
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Recent Changes (Latest Session)
+- **User Access Control**: Restricted user management to Stephen and Anvesh only
+  - Backend: Added `isUserAdmin()` authorization check to all user management API routes
+  - API routes return 403 Forbidden for unauthorized users with clear error messages
+  - Settings page: Shows access denied message for unauthorized users (Calvin, Brian, Steve)
+  - Sidebar: Settings link hidden from navigation for unauthorized users
+  - Consistent authorization logic between frontend and backend
+  - Successfully tested with Stephen (authorized), Anvesh (authorized), and Calvin (denied)
 - **User Access Management Feature**: Complete user management system in Settings
   - Migrated authentication from hardcoded array to storage-based system
   - Users initialized on startup only if storage is empty (5 default users)
