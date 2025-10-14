@@ -7,7 +7,7 @@ ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that hel
 The application is in active development with the following features implemented:
 
 ### Completed Features
-- **Authentication System**: Hardcoded user authentication with session management (4 users: Anvesh, Stephen, Calvin, Brian - all with password "viewpoint")
+- **Authentication System**: Hardcoded user authentication with session management (5 users: Anvesh, Stephen, Calvin, Brian, Steve - all with password "viewpoint")
 - **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
 - **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
 - **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
@@ -39,7 +39,7 @@ shared/
 
 ### Authentication Flow
 1. Users must login at `/auth` before accessing the app (no registration - hardcoded users only)
-2. Four hardcoded users available: Anvesh, Stephen, Calvin, Brian (all passwords: "viewpoint")
+2. Five hardcoded users available: Anvesh, Stephen, Calvin, Brian, Steve (all passwords: "viewpoint")
 3. Session-based authentication using express-session with in-memory store
 4. All API routes are protected and require authentication
 5. Protected routes automatically redirect to `/auth` if not authenticated
@@ -90,6 +90,7 @@ shared/
 - Customer form updated: Changed "Software" from dropdown to read-only display field
 - Customer form updated: Removed "Customer Name" field - name is now automatically set to company value
 - Authentication updated: Added fourth hardcoded user "Brian" with password "viewpoint"
+- Authentication updated: Added fifth hardcoded user "Steve" with password "viewpoint"
 - Customer schema updated: Added renewalExpirationDate field (timestamp) with robust validation
 - Customer forms updated: Added "Renewal Expiration Date" input field to both Add and Edit dialogs
 - Dashboard updated: Replaced "Active Customers" widget with "Expired Renewals" widget

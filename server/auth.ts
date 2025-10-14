@@ -16,6 +16,7 @@ const HARDCODED_USERS = [
   { id: "2", username: "Stephen", password: "viewpoint" },
   { id: "3", username: "Calvin", password: "viewpoint" },
   { id: "4", username: "Brian", password: "viewpoint" },
+  { id: "5", username: "Steve", password: "viewpoint" },
 ];
 
 export function setupAuth(app: Express) {
