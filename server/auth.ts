@@ -11,15 +11,30 @@ declare global {
   }
 }
 
-const HARDCODED_USERS = [
-  { id: "1", username: "Anvesh", password: "viewpoint" },
-  { id: "2", username: "Stephen", password: "viewpoint" },
-  { id: "3", username: "Calvin", password: "viewpoint" },
-  { id: "4", username: "Brian", password: "viewpoint" },
-  { id: "5", username: "Steve", password: "viewpoint" },
+// Initialize default users on startup
+const INITIAL_USERS = [
+  { username: "Anvesh", password: "viewpoint" },
+  { username: "Stephen", password: "viewpoint" },
+  { username: "Calvin", password: "viewpoint" },
+  { username: "Brian", password: "viewpoint" },
+  { username: "Steve", password: "viewpoint" },
 ];
 
+async function initializeUsers() {
+  const existingUsers = await storage.getAllUsers();
+  
+  // Only initialize if no users exist
+  if (existingUsers.length === 0) {
+    for (const user of INITIAL_USERS) {
+      await storage.createUser(user);
+    }
+  }
+}
+
 export function setupAuth(app: Express) {
+  // Initialize users
+  initializeUsers();
+
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET!,
     resave: false,
@@ -33,11 +48,9 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(
-    new LocalStrategy((username, password, done) => {
-      const user = HARDCODED_USERS.find(
-        u => u.username === username && u.password === password
-      );
-      if (!user) {
+    new LocalStrategy(async (username, password, done) => {
+      const user = await storage.getUserByUsername(username);
+      if (!user || user.password !== password) {
         return done(null, false);
       }
       return done(null, user);
@@ -45,8 +58,8 @@ export function setupAuth(app: Express) {
   );
 
   passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser((id: string, done) => {
-    const user = HARDCODED_USERS.find(u => u.id === id);
+  passport.deserializeUser(async (id: string, done) => {
+    const user = await storage.getUser(id);
     done(null, user || null);
   });
 
