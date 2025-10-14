@@ -336,13 +336,8 @@ function FeedbackDetailView({ feedback, onBack }: { feedback: Feedback; onBack: 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          data-testid="button-back"
-        >
-          <ArrowLeft className="h-5 w-5" />
+        <Button variant="outline" onClick={onBack} data-testid="button-back">
+          Back to List
         </Button>
         <div>
           <h1 className="text-3xl font-semibold">{feedback.customerName}</h1>
@@ -352,26 +347,29 @@ function FeedbackDetailView({ feedback, onBack }: { feedback: Feedback; onBack: 
         </div>
       </div>
 
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
-        {FEEDBACK_PHASES.map((phase, index) => {
-          const isActive = phase === activePhase;
-          const isCompleted = index < currentPhaseIndex;
-          const isClickable = index <= currentPhaseIndex + 1;
-
-          return (
-            <Button
-              key={phase}
-              variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
-              onClick={() => isClickable && handlePhaseChange(phase)}
-              disabled={!isClickable}
-              className="whitespace-nowrap"
-              data-testid={`button-phase-${phase.toLowerCase().replace(/\s+/g, '-')}`}
-            >
-              {phase}
-            </Button>
-          );
-        })}
-      </div>
+      {/* Phase Navigation Bar */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center gap-2">
+            {FEEDBACK_PHASES.map((phase, index) => (
+              <div key={phase} className="flex items-center flex-1">
+                <Button
+                  variant={activePhase === phase ? "default" : "outline"}
+                  className="w-full"
+                  onClick={() => handlePhaseChange(phase)}
+                  disabled={index > currentPhaseIndex + 1}
+                  data-testid={`button-phase-${phase.toLowerCase().replace(/\s+/g, '-')}`}
+                >
+                  {phase}
+                </Button>
+                {index < FEEDBACK_PHASES.length - 1 && (
+                  <ChevronRight className="h-5 w-5 mx-2 text-muted-foreground flex-shrink-0" />
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

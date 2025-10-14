@@ -72,6 +72,12 @@ shared/
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Recent Changes (Latest Session)
+- Feedback feature: Updated workflow routing bar to match Lessons Learned feature styling
+  - Phase navigation now wrapped in Card with CardContent (p-6 padding)
+  - Phase buttons use full-width styling with flex-1 containers
+  - ChevronRight icons added between phase buttons
+  - Back button changed from ghost icon to outline variant with "Back to List" text
+  - Button variants simplified: active phase uses "default", others use "outline"
 - Added software type filtering to organize and manage multiple types of sold software
 - Added software field to customer schema with predefined software types (Uptime360, ViewPoint)
 - Software dropdown added to customer creation and editing forms (required field)
