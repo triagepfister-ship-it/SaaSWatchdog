@@ -110,19 +110,48 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true }).extend({
+// Base customer schema for updates (without refinement)
+const baseCustomerSchema = createInsertSchema(customers).omit({ id: true }).extend({
+  // Required fields
+  company: z.string().min(1, "Company is required"),
+  site: z.string().min(1, "Site is required"),
+  opportunityName: z.string().min(1, "Opportunity name is required"),
+  renewalAmount: z.string().min(1, "Renewal amount is required"),
   software: z.enum(SOFTWARE_TYPES),
   renewalExpirationDate: z.preprocess(
     (val) => {
-      if (!val || (typeof val === 'string' && val.trim() === "")) return null;
+      if (!val || (typeof val === 'string' && val.trim() === "")) return undefined;
       return val;
     },
-    z.coerce.date().nullable().refine(
-      (date) => date === null || !isNaN(date.getTime()),
-      { message: "Invalid date format" }
-    )
+    z.coerce.date({ required_error: "Renewal expiration date is required" })
   ),
+  // Optional fields
+  name: z.string().optional(),
+  email: z.string().optional(),
+  responsibleSalesperson: z.string().optional(),
+  pilotCustomer: z.boolean().default(false),
+  churn: z.boolean().default(false),
+  churnReason: z.string().optional(),
+  status: z.string().default("active"),
 });
+
+// Insert schema with conditional validation for churn reason
+export const insertCustomerSchema = baseCustomerSchema.refine(
+  (data) => {
+    // If churn is true, churnReason must be provided
+    if (data.churn && (!data.churnReason || data.churnReason.trim() === "")) {
+      return false;
+    }
+    return true;
+  },
+  {
+    message: "Churn reason is required when churn is selected",
+    path: ["churnReason"],
+  }
+);
+
+// Update schema for PATCH operations
+export const updateCustomerSchema = baseCustomerSchema.partial();
 export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true });
 export const insertNoteSchema = createInsertSchema(notes).omit({ id: true, createdAt: true });
 export const insertLessonsLearnedSchema = createInsertSchema(lessonsLearned).omit({ 
