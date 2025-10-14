@@ -18,6 +18,9 @@ The application is in active development with the following features implemented
   - Settings hidden from sidebar for unauthorized users
   - Access denied message shown to unauthorized users
 - **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
+  - Required fields: Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date
+  - Conditional required: Churn Reason (only when Churn is selected)
+  - Optional fields: Customer Email, Responsible Salesperson, Pilot Customer checkbox
 - **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
 - **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
 - **Feedback System**: Form-based customer feedback submission with multi-phase workflow (Initiate → Analyze → Implementation → Closed)
@@ -87,6 +90,11 @@ shared/
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Recent Changes (Latest Session)
+- **Customer Form Validation**: Updated validation requirements for customer forms
+  - Required fields: Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date
+  - Conditional validation: Churn Reason required only when Churn checkbox is selected
+  - Optional fields: Customer Email, Responsible Salesperson, and Pilot Customer checkbox
+  - Created separate schemas: insertCustomerSchema (with validation) and updateCustomerSchema (for PATCH operations)
 - **User Access Control**: Restricted user management to Stephen and Anvesh only
   - Backend: Added `isUserAdmin()` authorization check to all user management API routes
   - API routes return 403 Forbidden for unauthorized users with clear error messages
