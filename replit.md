@@ -22,6 +22,13 @@ The application is in active development with the following features implemented
   - Conditional required: Churn Reason (only when Churn is selected)
   - Optional fields: Customer Email, Responsible Salesperson, Pilot Customer checkbox
 - **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
+- **Renewal Calendar**: Interactive calendar view displaying renewals by month
+  - Visual calendar grid with highlighted dates containing renewals
+  - Month-by-month navigation with previous/next buttons
+  - Filtered list of renewals for selected month with full customer details
+  - Proper currency formatting for renewal amounts
+  - Pilot customer and churn status badges
+  - Software type indicators
 - **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
 - **Feedback System**: Form-based customer feedback submission with multi-phase workflow (Initiate → Analyze → Implementation → Closed)
 - **ABB Branding**: Application uses ABB LTD corporate color scheme (ABB Red #FF000F) with light mode theme
@@ -90,6 +97,14 @@ shared/
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Recent Changes (Latest Session)
+- **Calendar Feature**: Implemented fully functional renewal calendar
+  - Interactive calendar grid showing dates with renewals (bold, highlighted)
+  - Month navigation with previous/next buttons
+  - Renewals list filtered by selected month, sorted by date
+  - Proper currency formatting with Number() conversion for decimal strings
+  - Displays company, opportunity, amount, date, software, pilot/churn badges
+  - Empty month message when no renewals scheduled
+  - Uses react-day-picker and date-fns for date handling
 - **Customer Form Validation**: Updated validation requirements for customer forms
   - Required fields: Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date
   - Conditional validation: Churn Reason required only when Churn checkbox is selected
@@ -182,12 +197,10 @@ shared/
 
 ### Next Steps
 1. Implement subscription management (CRUD operations)
-2. Add renewal date tracking and calculations
-3. Build notification/reminder system
-4. Implement escalation workflow for at-risk customers
-5. Add charts and analytics to dashboard
-6. Create calendar view for renewal dates
-7. Consider migrating from in-memory to PostgreSQL database for persistence
+2. Build notification/reminder system
+3. Implement escalation workflow for at-risk customers
+4. Add charts and analytics to dashboard
+5. Consider migrating from in-memory to PostgreSQL database for persistence
 
 ### User Preferences
 - Default theme: Light mode with ABB Red branding
