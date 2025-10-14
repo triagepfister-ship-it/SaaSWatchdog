@@ -114,7 +114,7 @@ export default function CalendarView() {
                 {customersInMonth.map((customer) => (
                   <div
                     key={customer.id}
-                    className="flex items-start justify-between p-4 rounded-lg border hover-elevate"
+                    className="flex items-start justify-between gap-4 p-4 rounded-lg border hover-elevate"
                     data-testid={`renewal-item-${customer.id}`}
                   >
                     <div className="flex-1">
@@ -145,7 +145,7 @@ export default function CalendarView() {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-lg" data-testid={`text-amount-${customer.id}`}>
-                        ${customer.renewalAmount?.toLocaleString()}
+                        {customer.renewalAmount != null ? `$${Number(customer.renewalAmount).toLocaleString()}` : 'N/A'}
                       </p>
                       <Badge variant="outline" className="mt-1">
                         {customer.software}
