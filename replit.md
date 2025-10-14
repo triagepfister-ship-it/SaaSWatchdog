@@ -7,7 +7,13 @@ ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that hel
 The application is in active development with the following features implemented:
 
 ### Completed Features
-- **Authentication System**: Hardcoded user authentication with session management (5 users: Anvesh, Stephen, Calvin, Brian, Steve - all with password "viewpoint")
+- **Authentication System**: Storage-based user authentication with session management, initialized with 5 default users (Anvesh, Stephen, Calvin, Brian, Steve - all with password "viewpoint")
+- **User Access Management**: Complete user management system in Settings page
+  - Create, update, and delete user credentials
+  - Username uniqueness validation
+  - Prevent self-deletion protection
+  - Password show/hide toggle for security
+  - Real-time user list with current user indicator
 - **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
 - **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
 - **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
@@ -46,9 +52,15 @@ shared/
 
 ### API Endpoints
 **Authentication:**
-- `POST /api/login` - Login with username/password (hardcoded users only)
+- `POST /api/login` - Login with username/password
 - `POST /api/logout` - Logout and destroy session
 - `GET /api/user` - Get current authenticated user
+
+**Users:**
+- `GET /api/users` - List all users (passwords excluded)
+- `POST /api/users` - Create new user (validates username uniqueness)
+- `PATCH /api/users/:id` - Update user (username/password)
+- `DELETE /api/users/:id` - Delete user (prevents self-deletion)
 
 **Customers:**
 - `GET /api/customers` - List all customers
@@ -72,6 +84,15 @@ shared/
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Recent Changes (Latest Session)
+- **User Access Management Feature**: Complete user management system in Settings
+  - Migrated authentication from hardcoded array to storage-based system
+  - Users initialized on startup only if storage is empty (5 default users)
+  - Settings page rebuilt with full CRUD operations for user credentials
+  - Username uniqueness validation on create and update
+  - Self-deletion prevention (cannot delete own account)
+  - Password show/hide toggle in forms
+  - API routes with proper validation and security measures
+  - Real-time user list with current user indicator
 - Feedback feature: Updated workflow routing bar to match Lessons Learned feature styling
   - Phase navigation now wrapped in Card with CardContent (p-6 padding)
   - Phase buttons use full-width styling with flex-1 containers
