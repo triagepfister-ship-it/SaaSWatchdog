@@ -2,10 +2,74 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { insertCustomerSchema, insertLessonsLearnedSchema, insertFeedbackSchema } from "@shared/schema";
+import { insertCustomerSchema, insertLessonsLearnedSchema, insertFeedbackSchema, insertUserSchema } from "@shared/schema";
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
+
+  // User management routes
+  app.get("/api/users", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const users = await storage.getAllUsers();
+    // Remove passwords from response
+    const usersWithoutPasswords = users.map(({ password, ...user }) => user);
+    res.json(usersWithoutPasswords);
+  });
+
+  app.post("/api/users", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    try {
+      const validatedData = insertUserSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(validatedData.username);
+      if (existingUser) {
+        return res.status(400).json({ error: "Username already exists" });
+      }
+      
+      const user = await storage.createUser(validatedData);
+      const { password, ...userWithoutPassword } = user;
+      res.status(201).json(userWithoutPassword);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid user data" });
+    }
+  });
+
+  app.patch("/api/users/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    try {
+      const partialUserSchema = insertUserSchema.partial();
+      const validatedData = partialUserSchema.parse(req.body);
+      
+      // If username is being updated, check if it already exists
+      if (validatedData.username) {
+        const existingUser = await storage.getUserByUsername(validatedData.username);
+        if (existingUser && existingUser.id !== req.params.id) {
+          return res.status(400).json({ error: "Username already exists" });
+        }
+      }
+      
+      const user = await storage.updateUser(req.params.id, validatedData);
+      if (!user) return res.sendStatus(404);
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid user data" });
+    }
+  });
+
+  app.delete("/api/users/:id", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    // Prevent deleting your own account
+    if (req.user?.id === req.params.id) {
+      return res.status(400).json({ error: "Cannot delete your own account" });
+    }
+    
+    const success = await storage.deleteUser(req.params.id);
+    if (!success) return res.sendStatus(404);
+    res.sendStatus(204);
+  });
 
   // Customer CRUD routes
   app.get("/api/customers", async (req, res) => {
