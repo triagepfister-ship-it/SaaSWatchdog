@@ -7,9 +7,20 @@ import { insertCustomerSchema, insertLessonsLearnedSchema, insertFeedbackSchema,
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
 
-  // User management routes
+  // Helper function to check if user has admin access
+  const isUserAdmin = (username?: string) => {
+    return username === "Stephen" || username === "Anvesh";
+  };
+
+  // User management routes (restricted to Stephen and Anvesh)
   app.get("/api/users", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    // Only Stephen and Anvesh can access user management
+    if (!isUserAdmin(req.user?.username)) {
+      return res.status(403).json({ error: "Access denied. Only Stephen and Anvesh can manage users." });
+    }
+    
     const users = await storage.getAllUsers();
     // Remove passwords from response
     const usersWithoutPasswords = users.map(({ password, ...user }) => user);
@@ -18,6 +29,12 @@ export function registerRoutes(app: Express): Server {
 
   app.post("/api/users", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    // Only Stephen and Anvesh can create users
+    if (!isUserAdmin(req.user?.username)) {
+      return res.status(403).json({ error: "Access denied. Only Stephen and Anvesh can manage users." });
+    }
+    
     try {
       const validatedData = insertUserSchema.parse(req.body);
       
@@ -37,6 +54,12 @@ export function registerRoutes(app: Express): Server {
 
   app.patch("/api/users/:id", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    // Only Stephen and Anvesh can update users
+    if (!isUserAdmin(req.user?.username)) {
+      return res.status(403).json({ error: "Access denied. Only Stephen and Anvesh can manage users." });
+    }
+    
     try {
       const partialUserSchema = insertUserSchema.partial();
       const validatedData = partialUserSchema.parse(req.body);
@@ -60,6 +83,11 @@ export function registerRoutes(app: Express): Server {
 
   app.delete("/api/users/:id", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    // Only Stephen and Anvesh can delete users
+    if (!isUserAdmin(req.user?.username)) {
+      return res.status(403).json({ error: "Access denied. Only Stephen and Anvesh can manage users." });
+    }
     
     // Prevent deleting your own account
     if (req.user?.id === req.params.id) {
