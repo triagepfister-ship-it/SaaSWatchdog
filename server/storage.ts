@@ -114,7 +114,9 @@ export class MemStorage implements IStorage {
   async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
     const id = randomUUID();
     const customer: Customer = { 
-      ...insertCustomer, 
+      ...insertCustomer,
+      name: insertCustomer.name ?? insertCustomer.company,
+      email: insertCustomer.email ?? "",
       id,
       site: insertCustomer.site && insertCustomer.site.trim() !== "" ? insertCustomer.site : null,
       opportunityName: insertCustomer.opportunityName && insertCustomer.opportunityName.trim() !== "" ? insertCustomer.opportunityName : null,

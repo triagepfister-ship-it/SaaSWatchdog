@@ -7,7 +7,7 @@ ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that hel
 The application is in active development with the following features implemented:
 
 ### Completed Features
-- **Authentication System**: Storage-based user authentication with session management, initialized with 5 default users (Anvesh, Stephen, Calvin, Brian, Steve - all with password "viewpoint")
+- **Authentication System**: Storage-based user authentication with session management, initialized with 6 default users (Anvesh, Stephen, Calvin, Brian, Steve, test - passwords: "viewpoint" for first 5 users, "test" for test user)
 - **User Access Management**: Complete user management system in Settings page (restricted to Stephen and Anvesh only)
   - Create, update, and delete user credentials
   - Username uniqueness validation
@@ -97,6 +97,7 @@ shared/
 - `DELETE /api/feedback/:id` - Delete feedback
 
 ### Recent Changes (Latest Session)
+- **New Hardcoded User**: Added test user (username: "test", password: "test") to the authentication system
 - **Calendar Feature**: Implemented fully functional renewal calendar
   - Interactive calendar grid showing dates with renewals (bold, highlighted)
   - Month navigation with previous/next buttons

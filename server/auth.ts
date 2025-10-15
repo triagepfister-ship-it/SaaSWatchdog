@@ -18,6 +18,7 @@ const INITIAL_USERS = [
   { username: "Calvin", password: "viewpoint" },
   { username: "Brian", password: "viewpoint" },
   { username: "Steve", password: "viewpoint" },
+  { username: "test", password: "test" },
 ];
 
 async function initializeUsers() {
