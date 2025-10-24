@@ -9,6 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Upload, Download, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -35,6 +36,10 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     pilotCustomer: customer.pilotCustomer,
     churn: customer.churn,
     churnReason: customer.churnReason || "",
+    attachmentData: customer.attachmentData || undefined,
+    attachmentFilename: customer.attachmentFilename || undefined,
+    attachmentMimeType: customer.attachmentMimeType || undefined,
+    attachmentSize: customer.attachmentSize || undefined,
   });
 
   useEffect(() => {
@@ -50,8 +55,52 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
       pilotCustomer: customer.pilotCustomer,
       churn: customer.churn,
       churnReason: customer.churnReason || "",
+      attachmentData: customer.attachmentData || undefined,
+      attachmentFilename: customer.attachmentFilename || undefined,
+      attachmentMimeType: customer.attachmentMimeType || undefined,
+      attachmentSize: customer.attachmentSize || undefined,
     });
   }, [customer]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Read file and convert to base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setFormData({
+        ...formData,
+        attachmentData: base64String,
+        attachmentFilename: file.name,
+        attachmentMimeType: file.type,
+        attachmentSize: file.size,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeAttachment = () => {
+    setFormData({
+      ...formData,
+      attachmentData: undefined,
+      attachmentFilename: undefined,
+      attachmentMimeType: undefined,
+      attachmentSize: undefined,
+    });
+  };
+
+  const downloadAttachment = () => {
+    if (!formData.attachmentData || !formData.attachmentFilename) return;
+
+    const link = document.createElement('a');
+    link.href = formData.attachmentData;
+    link.download = formData.attachmentFilename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -212,6 +261,46 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
               />
             </div>
           )}
+          <div className="space-y-2">
+            <Label htmlFor="edit-attachment">Attachment (Optional)</Label>
+            {formData.attachmentFilename ? (
+              <div className="flex items-center gap-2 p-2 border rounded-md" data-testid="edit-attachment-preview">
+                <Upload className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm flex-1">{formData.attachmentFilename}</span>
+                <span className="text-xs text-muted-foreground">
+                  {formData.attachmentSize ? `${(formData.attachmentSize / 1024).toFixed(2)} KB` : ""}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={downloadAttachment}
+                  title="Download attachment"
+                  data-testid="button-download-attachment"
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={removeAttachment}
+                  title="Remove attachment"
+                  data-testid="button-remove-edit-attachment"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <Input
+                id="edit-attachment"
+                type="file"
+                onChange={handleFileChange}
+                data-testid="input-edit-attachment"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg"
+              />
+            )}
+          </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} data-testid="button-cancel-edit">
               Cancel
