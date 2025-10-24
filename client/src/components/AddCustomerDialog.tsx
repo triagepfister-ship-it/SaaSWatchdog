@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus } from "lucide-react";
+import { Plus, Upload, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -36,6 +36,10 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
     pilotCustomer: false,
     churn: false,
     churnReason: "",
+    attachmentData: undefined as string | undefined,
+    attachmentFilename: undefined as string | undefined,
+    attachmentMimeType: undefined as string | undefined,
+    attachmentSize: undefined as number | undefined,
   });
 
   // Update software when selectedSoftware prop changes and dialog opens
@@ -44,6 +48,44 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
       setFormData(prev => ({ ...prev, software: selectedSoftware }));
     }
   }, [open, selectedSoftware]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setFormData({
+        ...formData,
+        attachmentData: undefined,
+        attachmentFilename: undefined,
+        attachmentMimeType: undefined,
+        attachmentSize: undefined,
+      });
+      return;
+    }
+
+    // Read file and convert to base64
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setFormData({
+        ...formData,
+        attachmentData: base64String,
+        attachmentFilename: file.name,
+        attachmentMimeType: file.type,
+        attachmentSize: file.size,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeAttachment = () => {
+    setFormData({
+      ...formData,
+      attachmentData: undefined,
+      attachmentFilename: undefined,
+      attachmentMimeType: undefined,
+      attachmentSize: undefined,
+    });
+  };
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -58,7 +100,7 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
         description: "Customer created successfully",
       });
       setOpen(false);
-      setFormData({ email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", pilotCustomer: false, churn: false, churnReason: "" });
+      setFormData({ email: "", company: "", software: selectedSoftware !== "all" ? selectedSoftware : "", site: "", opportunityName: "", renewalAmount: "", renewalExpirationDate: "", responsibleSalesperson: "", pilotCustomer: false, churn: false, churnReason: "", attachmentData: undefined, attachmentFilename: undefined, attachmentMimeType: undefined, attachmentSize: undefined });
     },
     onError: (error: Error) => {
       toast({
@@ -223,6 +265,35 @@ export function AddCustomerDialog({ selectedSoftware = "" }: AddCustomerDialogPr
               />
             </div>
           )}
+          <div className="space-y-2">
+            <Label htmlFor="attachment">Attachment (Optional)</Label>
+            {formData.attachmentFilename ? (
+              <div className="flex items-center gap-2 p-2 border rounded-md" data-testid="attachment-preview">
+                <Upload className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm flex-1">{formData.attachmentFilename}</span>
+                <span className="text-xs text-muted-foreground">
+                  {formData.attachmentSize ? `${(formData.attachmentSize / 1024).toFixed(2)} KB` : ""}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={removeAttachment}
+                  data-testid="button-remove-attachment"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <Input
+                id="attachment"
+                type="file"
+                onChange={handleFileChange}
+                data-testid="input-attachment"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg"
+              />
+            )}
+          </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} data-testid="button-cancel">
               Cancel
