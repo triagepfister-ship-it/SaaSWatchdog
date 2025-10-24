@@ -24,6 +24,10 @@ export const customers = pgTable("customers", {
   churn: boolean("churn").notNull().default(false),
   churnReason: text("churn_reason"),
   status: text("status").notNull().default("active"),
+  attachmentData: text("attachment_data"),
+  attachmentFilename: text("attachment_filename"),
+  attachmentMimeType: text("attachment_mime_type"),
+  attachmentSize: integer("attachment_size"),
 });
 
 export const subscriptions = pgTable("subscriptions", {
@@ -133,6 +137,11 @@ const baseCustomerSchema = createInsertSchema(customers).omit({ id: true }).exte
   churn: z.boolean().default(false),
   churnReason: z.string().optional(),
   status: z.string().default("active"),
+  // Attachment fields (all optional)
+  attachmentData: z.string().optional(),
+  attachmentFilename: z.string().optional(),
+  attachmentMimeType: z.string().optional(),
+  attachmentSize: z.number().optional(),
 });
 
 // Insert schema with conditional validation for churn reason
