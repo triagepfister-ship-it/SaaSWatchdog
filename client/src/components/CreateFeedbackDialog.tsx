@@ -139,6 +139,7 @@ export function CreateFeedbackDialog({ customerName = "", software = "", trigger
               placeholder="Describe the customer feedback or experience"
               rows={6}
               required
+              autoFocus
               data-testid="input-feedback-text"
             />
           </div>
