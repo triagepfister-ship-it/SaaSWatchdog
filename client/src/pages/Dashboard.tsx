@@ -154,7 +154,12 @@ export default function Dashboard() {
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground">{customer.company}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm text-muted-foreground">{customer.company}</p>
+                              <Badge variant="outline" className="text-xs" data-testid={`software-badge-${customer.id}`}>
+                                {customer.software}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
                         <div className="text-right">
