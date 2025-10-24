@@ -128,7 +128,7 @@ export default function Dashboard() {
         <StatCard
           title="Upcoming Renewals"
           value={upcomingRenewals30.toString()}
-          change={`${upcomingRenewals60} in 60 days • ${upcomingRenewals90} in 90 days`}
+          change={`in 30 days • ${upcomingRenewals60} in 60 days • ${upcomingRenewals90} in 90 days`}
           icon={RefreshCw}
         />
         <StatCard
