@@ -32,6 +32,16 @@ export default function Dashboard() {
     return expirationDate < today;
   }).length;
   
+  const thirtyDaysFromNow = new Date(today);
+  thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+  
+  const upcomingRenewals = filteredCustomers.filter(c => {
+    if (!c.renewalExpirationDate) return false;
+    const expirationDate = new Date(c.renewalExpirationDate);
+    expirationDate.setHours(0, 0, 0, 0);
+    return expirationDate >= today && expirationDate <= thirtyDaysFromNow;
+  }).length;
+  
   const totalRevenue = filteredCustomers.reduce((sum, customer) => {
     const amount = customer.renewalAmount ? parseFloat(customer.renewalAmount) : 0;
     return sum + amount;
@@ -88,7 +98,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Upcoming Renewals"
-          value="0"
+          value={upcomingRenewals.toString()}
           change="Next 30 days"
           icon={RefreshCw}
         />
