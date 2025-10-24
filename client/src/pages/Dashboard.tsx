@@ -43,6 +43,7 @@ export default function Dashboard() {
   const ninetyDaysFromNow = new Date(today);
   ninetyDaysFromNow.setDate(ninetyDaysFromNow.getDate() + 90);
   
+  // Renewals in next 0-30 days
   const upcomingRenewals30 = filteredCustomers.filter(c => {
     if (!c.renewalExpirationDate) return false;
     const expirationDate = new Date(c.renewalExpirationDate);
@@ -50,18 +51,24 @@ export default function Dashboard() {
     return expirationDate >= today && expirationDate <= thirtyDaysFromNow;
   }).length;
   
+  // Renewals in 31-60 days (not cumulative)
   const upcomingRenewals60 = filteredCustomers.filter(c => {
     if (!c.renewalExpirationDate) return false;
     const expirationDate = new Date(c.renewalExpirationDate);
     expirationDate.setHours(0, 0, 0, 0);
-    return expirationDate >= today && expirationDate <= sixtyDaysFromNow;
+    const thirtyOneDaysFromNow = new Date(today);
+    thirtyOneDaysFromNow.setDate(thirtyOneDaysFromNow.getDate() + 31);
+    return expirationDate >= thirtyOneDaysFromNow && expirationDate <= sixtyDaysFromNow;
   }).length;
   
+  // Renewals in 61-90 days (not cumulative)
   const upcomingRenewals90 = filteredCustomers.filter(c => {
     if (!c.renewalExpirationDate) return false;
     const expirationDate = new Date(c.renewalExpirationDate);
     expirationDate.setHours(0, 0, 0, 0);
-    return expirationDate >= today && expirationDate <= ninetyDaysFromNow;
+    const sixtyOneDaysFromNow = new Date(today);
+    sixtyOneDaysFromNow.setDate(sixtyOneDaysFromNow.getDate() + 61);
+    return expirationDate >= sixtyOneDaysFromNow && expirationDate <= ninetyDaysFromNow;
   }).length;
   
   const totalRevenue = filteredCustomers.reduce((sum, customer) => {
