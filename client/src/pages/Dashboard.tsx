@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
+import { CreateFeedbackDialog } from "@/components/CreateFeedbackDialog";
 import { AlertCircle, Users, DollarSign, RefreshCw, Flag, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
@@ -137,13 +138,13 @@ export default function Dashboard() {
                 return (
                   <div 
                     key={customer.id} 
-                    className={`flex items-center justify-between p-3 rounded-md border ${
+                    className={`flex items-center justify-between gap-4 p-3 rounded-md border ${
                       customer.pilotCustomer ? 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800' : ''
                     }`}
                     data-testid={`recent-customer-${customer.id}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="font-medium">{customer.name}</p>
                           {customer.pilotCustomer && (
@@ -161,7 +162,7 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex-shrink-0">
                       <p className="font-medium" data-testid={`customer-revenue-${customer.id}`}>{formattedCustomerRevenue}</p>
                       <div className="flex items-center justify-end gap-1.5 text-sm text-muted-foreground mt-1">
                         <Calendar className="w-3.5 h-3.5" />
@@ -172,6 +173,12 @@ export default function Dashboard() {
                           }
                         </p>
                       </div>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <CreateFeedbackDialog 
+                        customerName={customer.name}
+                        software={customer.software}
+                      />
                     </div>
                   </div>
                 );
