@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 import { CreateFeedbackDialog } from "@/components/CreateFeedbackDialog";
-import { AlertCircle, Users, DollarSign, RefreshCw, Flag, Calendar } from "lucide-react";
+import { AlertCircle, Users, DollarSign, RefreshCw, Flag, Calendar, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Customer, SOFTWARE_TYPES } from "@shared/schema";
@@ -178,6 +178,13 @@ export default function Dashboard() {
                     maximumFractionDigits: 2,
                   }).format(revenue);
                   
+                  // Check if renewal is within 30 days
+                  const isUrgent = customer.renewalExpirationDate ? (() => {
+                    const expirationDate = new Date(customer.renewalExpirationDate);
+                    expirationDate.setHours(0, 0, 0, 0);
+                    return expirationDate <= thirtyDaysFromNow && expirationDate >= today;
+                  })() : false;
+                  
                   return (
                     <div 
                       key={customer.id} 
@@ -205,8 +212,14 @@ export default function Dashboard() {
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className="font-medium text-sm" data-testid={`customer-revenue-${customer.id}`}>{formattedCustomerRevenue}</p>
-                        <div className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
-                          <Calendar className="w-3 h-3" />
+                        <div className={`flex items-center justify-end gap-1 text-sm font-medium ${
+                          isUrgent ? 'text-red-600 dark:text-red-500' : 'text-muted-foreground'
+                        }`}>
+                          {isUrgent ? (
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                          ) : (
+                            <Calendar className="w-3.5 h-3.5" />
+                          )}
                           <p data-testid={`customer-renewal-date-${customer.id}`}>
                             {customer.renewalExpirationDate 
                               ? format(new Date(customer.renewalExpirationDate), "MMM d, yyyy")
