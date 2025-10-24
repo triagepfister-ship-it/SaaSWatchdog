@@ -37,11 +37,31 @@ export default function Dashboard() {
   const thirtyDaysFromNow = new Date(today);
   thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
   
-  const upcomingRenewals = filteredCustomers.filter(c => {
+  const sixtyDaysFromNow = new Date(today);
+  sixtyDaysFromNow.setDate(sixtyDaysFromNow.getDate() + 60);
+  
+  const ninetyDaysFromNow = new Date(today);
+  ninetyDaysFromNow.setDate(ninetyDaysFromNow.getDate() + 90);
+  
+  const upcomingRenewals30 = filteredCustomers.filter(c => {
     if (!c.renewalExpirationDate) return false;
     const expirationDate = new Date(c.renewalExpirationDate);
     expirationDate.setHours(0, 0, 0, 0);
     return expirationDate >= today && expirationDate <= thirtyDaysFromNow;
+  }).length;
+  
+  const upcomingRenewals60 = filteredCustomers.filter(c => {
+    if (!c.renewalExpirationDate) return false;
+    const expirationDate = new Date(c.renewalExpirationDate);
+    expirationDate.setHours(0, 0, 0, 0);
+    return expirationDate >= today && expirationDate <= sixtyDaysFromNow;
+  }).length;
+  
+  const upcomingRenewals90 = filteredCustomers.filter(c => {
+    if (!c.renewalExpirationDate) return false;
+    const expirationDate = new Date(c.renewalExpirationDate);
+    expirationDate.setHours(0, 0, 0, 0);
+    return expirationDate >= today && expirationDate <= ninetyDaysFromNow;
   }).length;
   
   const totalRevenue = filteredCustomers.reduce((sum, customer) => {
@@ -100,8 +120,8 @@ export default function Dashboard() {
         />
         <StatCard
           title="Upcoming Renewals"
-          value={upcomingRenewals.toString()}
-          change="Next 30 days"
+          value={upcomingRenewals30.toString()}
+          change={`${upcomingRenewals60} in 60 days • ${upcomingRenewals90} in 90 days`}
           icon={RefreshCw}
         />
         <StatCard
