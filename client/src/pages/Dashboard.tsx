@@ -242,6 +242,98 @@ export default function Dashboard() {
           })()}
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Expired Renewals</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {(() => {
+            // Filter customers with past renewal dates and sort newest to oldest
+            const expiredCustomers = filteredCustomers
+              .filter(c => {
+                if (!c.renewalExpirationDate) return false;
+                const expirationDate = new Date(c.renewalExpirationDate);
+                expirationDate.setHours(0, 0, 0, 0);
+                return expirationDate < today;
+              })
+              .sort((a, b) => {
+                // Sort newest to oldest (most recently expired first)
+                const dateA = new Date(a.renewalExpirationDate!).getTime();
+                const dateB = new Date(b.renewalExpirationDate!).getTime();
+                return dateB - dateA;
+              });
+            
+            if (expiredCustomers.length === 0) {
+              return (
+                <div className="text-center py-8 text-muted-foreground">
+                  No expired renewals found.
+                </div>
+              );
+            }
+            
+            return (
+              <div className="space-y-1.5">
+                {expiredCustomers.map((customer) => {
+                  const revenue = customer.renewalAmount ? parseFloat(customer.renewalAmount) : 0;
+                  const formattedCustomerRevenue = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }).format(revenue);
+                  
+                  return (
+                    <div 
+                      key={customer.id} 
+                      className={`flex items-center justify-between gap-3 p-2 rounded-md border ${
+                        customer.pilotCustomer ? 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800' : ''
+                      }`}
+                      data-testid={`expired-customer-${customer.id}`}
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-medium text-sm">{customer.name}</p>
+                            {customer.pilotCustomer && (
+                              <Badge variant="secondary" className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 text-xs py-0" data-testid={`pilot-badge-expired-${customer.id}`}>
+                                <Flag className="w-2.5 h-2.5 mr-0.5" />
+                                Pilot
+                              </Badge>
+                            )}
+                            <Badge variant="outline" className="text-xs py-0" data-testid={`software-badge-expired-${customer.id}`}>
+                              {customer.software}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{customer.company}</p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="font-medium text-sm" data-testid={`customer-revenue-expired-${customer.id}`}>{formattedCustomerRevenue}</p>
+                        <div className="flex items-center justify-end gap-1 text-sm font-medium text-red-600 dark:text-red-500">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          <p data-testid={`customer-expiration-date-expired-${customer.id}`}>
+                            {customer.renewalExpirationDate 
+                              ? format(new Date(customer.renewalExpirationDate), "MMM d, yyyy")
+                              : "No date set"
+                            }
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex-shrink-0">
+                        <CreateFeedbackDialog 
+                          customerName={customer.name}
+                          software={customer.software}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
+        </CardContent>
+      </Card>
     </div>
   );
 }

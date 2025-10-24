@@ -31,10 +31,14 @@ The application is built with a modern web stack, emphasizing a responsive user 
 ### Feature Specifications
 - **Authentication System**: Storage-based user authentication with session management.
 - **Customer Management**: Full CRUD for customers, including software filtering, required fields (Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date), and conditional validation (Churn Reason).
-- **Dashboard**: Displays total revenue and tracks expired renewals.
+- **Dashboard**: 
+  - Displays stat cards with total revenue, customer count, expired renewals, and upcoming renewals (with incremental counts for 30/60/90 day periods)
+  - **Upcoming Renewals Section**: Lists all future renewals sorted by expiration date (nearest to furthest), with urgency indicators (red text + AlertTriangle icon) for renewals within 30 days
+  - **Expired Renewals Section**: Lists all expired renewals sorted newest to oldest (most recently expired first), with red text and AlertTriangle icon for all entries
+  - Both sections display customer name, company, software badge, pilot badge, renewal amount, expiration date, and feedback launch button
 - **Renewal Calendar**: Interactive month-by-month view of renewals with customer details, currency formatting, and status badges.
 - **Lessons Learned Workflow**: A 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed).
-- **Feedback System**: A form-based submission with a multi-phase workflow (Initiate → Analyze → Implementation → Closed).
+- **Feedback System**: A form-based submission with a multi-phase workflow (Initiate → Analyze → Implementation → Closed). Can be launched from Dashboard with customer info pre-filled and auto-focus on feedback text area.
 - **User Access Management**: Create, update, delete user credentials with username uniqueness validation, self-deletion prevention, and password show/hide functionality. Access to user management is restricted to authorized users.
 
 ## External Dependencies
