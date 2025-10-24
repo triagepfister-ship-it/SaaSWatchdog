@@ -1,214 +1,76 @@
 # ViewPoint Watchdog - SaaS Renewal Management Platform
 
 ## Overview
-ViewPoint Watchdog is a comprehensive SaaS renewal tracking application that helps businesses manage customer subscriptions, track renewal dates, prevent churn, and automate notifications.
+ViewPoint Watchdog is a comprehensive SaaS renewal tracking application designed to help businesses manage customer subscriptions, monitor renewal dates, minimize churn, and automate notifications. The platform aims to provide a centralized system for businesses to gain oversight of their SaaS renewals, improve customer retention strategies, and streamline operational workflows related to subscription management.
 
-## Current State
-The application is in active development with the following features implemented:
-
-### Completed Features
-- **Authentication System**: Storage-based user authentication with session management, initialized with 6 default users (Anvesh, Stephen, Calvin, Brian, Steve, test - passwords: "viewpoint" for first 5 users, "test" for test user)
-- **User Access Management**: Complete user management system in Settings page (restricted to Stephen and Anvesh only)
-  - Create, update, and delete user credentials
-  - Username uniqueness validation
-  - Prevent self-deletion protection
-  - Password show/hide toggle for security
-  - Real-time user list with current user indicator
-  - Access control: Only Stephen and Anvesh can access user management
-  - Settings hidden from sidebar for unauthorized users
-  - Access denied message shown to unauthorized users
-- **Customer Management**: Full CRUD operations (Create, Read, Update, Delete) for customers with software filtering
-  - Required fields: Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date
-  - Conditional required: Churn Reason (only when Churn is selected)
-  - Optional fields: Customer Email, Responsible Salesperson, Pilot Customer checkbox
-- **Dashboard**: Overview of customer metrics including total revenue aggregation and expired renewals tracking
-- **Renewal Calendar**: Interactive calendar view displaying renewals by month
-  - Visual calendar grid with highlighted dates containing renewals
-  - Month-by-month navigation with previous/next buttons
-  - Filtered list of renewals for selected month with full customer details
-  - Proper currency formatting for renewal amounts
-  - Pilot customer and churn status badges
-  - Software type indicators
-- **Lessons Learned Workflow**: Complete 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed) with phase-specific data entry and navigation
-- **Feedback System**: Form-based customer feedback submission with multi-phase workflow (Initiate → Analyze → Implementation → Closed)
-- **ABB Branding**: Application uses ABB LTD corporate color scheme (ABB Red #FF000F) with light mode theme
-- **Responsive Design**: Mobile-friendly interface with sidebar navigation
-
-### Architecture
-- **Frontend**: React with TypeScript, Wouter for routing, TanStack Query for data management
-- **Backend**: Express.js with in-memory storage (MemStorage)
-- **Authentication**: Passport.js with local strategy, session-based auth
-- **UI Components**: Shadcn UI with Tailwind CSS
-
-### Project Structure
-```
-client/
-  src/
-    components/     # Reusable UI components
-    pages/          # Page components
-    hooks/          # Custom React hooks (including useAuth)
-    lib/            # Utility functions and configurations
-server/
-  auth.ts          # Authentication setup with Passport.js
-  routes.ts        # API route handlers
-  storage.ts       # Data storage interface and implementation
-shared/
-  schema.ts        # Shared TypeScript types and Zod schemas
-```
-
-### Authentication Flow
-1. Users must login at `/auth` before accessing the app (no registration - hardcoded users only)
-2. Five hardcoded users available: Anvesh, Stephen, Calvin, Brian, Steve (all passwords: "viewpoint")
-3. Session-based authentication using express-session with in-memory store
-4. All API routes are protected and require authentication
-5. Protected routes automatically redirect to `/auth` if not authenticated
-
-### API Endpoints
-**Authentication:**
-- `POST /api/login` - Login with username/password
-- `POST /api/logout` - Logout and destroy session
-- `GET /api/user` - Get current authenticated user
-
-**Users:**
-- `GET /api/users` - List all users (passwords excluded)
-- `POST /api/users` - Create new user (validates username uniqueness)
-- `PATCH /api/users/:id` - Update user (username/password)
-- `DELETE /api/users/:id` - Delete user (prevents self-deletion)
-
-**Customers:**
-- `GET /api/customers` - List all customers
-- `GET /api/customers/:id` - Get specific customer
-- `POST /api/customers` - Create new customer
-- `PATCH /api/customers/:id` - Update customer
-- `DELETE /api/customers/:id` - Delete customer
-
-**Lessons Learned:**
-- `GET /api/lessons-learned` - List all lessons learned workflows
-- `GET /api/lessons-learned/:id` - Get specific lessons learned workflow
-- `POST /api/lessons-learned` - Create new lessons learned workflow
-- `PATCH /api/lessons-learned/:id` - Update lessons learned workflow (phase transitions, data updates)
-- `DELETE /api/lessons-learned/:id` - Delete lessons learned workflow
-
-**Feedback:**
-- `GET /api/feedback` - List all feedback submissions
-- `GET /api/feedback/:id` - Get specific feedback
-- `POST /api/feedback` - Submit new feedback
-- `PATCH /api/feedback/:id` - Update feedback (phase transitions, data updates)
-- `DELETE /api/feedback/:id` - Delete feedback
-
-### Recent Changes (Latest Session)
-- **New Hardcoded User**: Added test user (username: "test", password: "test") to the authentication system
-- **Calendar Feature**: Implemented fully functional renewal calendar
-  - Interactive calendar grid showing dates with renewals (bold, highlighted)
-  - Month navigation with previous/next buttons
-  - Renewals list filtered by selected month, sorted by date
-  - Proper currency formatting with Number() conversion for decimal strings
-  - Displays company, opportunity, amount, date, software, pilot/churn badges
-  - Empty month message when no renewals scheduled
-  - Uses react-day-picker and date-fns for date handling
-- **Customer Form Validation**: Updated validation requirements for customer forms
-  - Required fields: Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date
-  - Conditional validation: Churn Reason required only when Churn checkbox is selected
-  - Optional fields: Customer Email, Responsible Salesperson, and Pilot Customer checkbox
-  - Created separate schemas: insertCustomerSchema (with validation) and updateCustomerSchema (for PATCH operations)
-- **User Access Control**: Restricted user management to Stephen and Anvesh only
-  - Backend: Added `isUserAdmin()` authorization check to all user management API routes
-  - API routes return 403 Forbidden for unauthorized users with clear error messages
-  - Settings page: Shows access denied message for unauthorized users (Calvin, Brian, Steve)
-  - Sidebar: Settings link hidden from navigation for unauthorized users
-  - Consistent authorization logic between frontend and backend
-  - Successfully tested with Stephen (authorized), Anvesh (authorized), and Calvin (denied)
-- **User Access Management Feature**: Complete user management system in Settings
-  - Migrated authentication from hardcoded array to storage-based system
-  - Users initialized on startup only if storage is empty (5 default users)
-  - Settings page rebuilt with full CRUD operations for user credentials
-  - Username uniqueness validation on create and update
-  - Self-deletion prevention (cannot delete own account)
-  - Password show/hide toggle in forms
-  - API routes with proper validation and security measures
-  - Real-time user list with current user indicator
-- Feedback feature: Updated workflow routing bar to match Lessons Learned feature styling
-  - Phase navigation now wrapped in Card with CardContent (p-6 padding)
-  - Phase buttons use full-width styling with flex-1 containers
-  - ChevronRight icons added between phase buttons
-  - Back button changed from ghost icon to outline variant with "Back to List" text
-  - Button variants simplified: active phase uses "default", others use "outline"
-- Added software type filtering to organize and manage multiple types of sold software
-- Added software field to customer schema with predefined software types (Uptime360, ViewPoint)
-- Software dropdown added to customer creation and editing forms (required field)
-- Software filter dropdown added to Dashboard, Customers, and Churn pages for filtering data by selected software
-- All metrics (Total Customers, Active Customers, Total Revenue) now filter based on selected software
-- Recent customers list on Dashboard filters by selected software
-- Application name updated to "ELSE SaaS Watchdog"
-- Schema validation enforces software types using enum constraint
-- Added constraint: "Add Customer" button disabled when "All Software" filter is selected
-- Software field in customer form auto-inherits from filter selection and becomes read-only
-- Software segregation enforced: customers can only be added to specific software types
-- Customer form updated: Changed "Email" label to "Customer Email"
-- Customer form updated: Added "Site" field (text input for site location)
-- Customer form updated: Removed "Account Manager" field
-- Customer schema updated: Replaced accountManager field with site field
-- Customer form updated: Changed "Software" from dropdown to read-only display field
-- Customer form updated: Removed "Customer Name" field - name is now automatically set to company value
-- Authentication updated: Added fourth hardcoded user "Brian" with password "viewpoint"
-- Authentication updated: Added fifth hardcoded user "Steve" with password "viewpoint"
-- Customer schema updated: Added renewalExpirationDate field (timestamp) with robust validation
-- Customer forms updated: Added "Renewal Expiration Date" input field to both Add and Edit dialogs
-- Dashboard updated: Replaced "Active Customers" widget with "Expired Renewals" widget
-- Expired Renewals metric: Counts customers whose renewal expiration date has passed (compared to today)
-- Customer forms updated: Reorganized fields into two-column grid layout for better screen utilization
-- **Lessons Learned Feature**: Complete workflow management system with 4 linear phases
-  - Phase navigation bar with visual indicators and restricted forward progression
-  - New workflows start in "Root Cause Analysis" phase (skips Initiate)
-  - Initiate phase: Available for reference but not used as initial phase
-  - Root Cause Analysis phase: Document findings and analysis (initial phase for new workflows)
-  - Implementation phase: Track implementation plan and progress notes
-  - Closed phase: Document final outcome with automatic closure tracking
-  - Grid layout displaying workflows with GUID numbers (6-digit format starting from 000001)
-  - Each card displays: GUID, Customer, Description, Root Cause Analysis, Implementation Details
-  - GUIDs are assigned chronologically based on initiated date
-  - Responsive grid: 1 column on mobile, 2 on large screens, 3 on extra large screens
-  - Detail view with phase-specific forms and data persistence
-- Customer form updated: Added "Pilot Customer" checkbox to both Add and Edit dialogs
-- Customer schema updated: Added pilotCustomer field (boolean, defaults to false)
-- Dashboard updated: Recent Customers section now displays visual indicators for pilot customers
-  - Light purple background (bg-purple-50/dark:bg-purple-950) with purple border (border-purple-200/dark:border-purple-800)
-  - "Pilot" badge with flag icon displayed next to customer name
-  - Badge styled with purple colors (bg-purple-100/dark:bg-purple-900, text-purple-700/dark:text-purple-300)
-- Dashboard updated: Recent Customers section now displays revenue amounts
-  - Revenue amount shown prominently on the right side (formatted as USD currency)
-  - Email displayed below revenue amount as secondary information
-  - Left side shows customer name (with pilot badge if applicable) and company
-- **Feedback Feature**: Complete form-based customer feedback system with multi-phase workflow
-  - Form-based submission with customerName, software, and feedbackText fields
-  - Software field (Uptime360/ViewPoint) required for categorization and filtering
-  - Client-side validation ensures software is selected before submission
-  - Software filter dropdown on Feedback page filters submissions by selected software type
-  - New submissions automatically start in "Analyze" phase (bypasses Initiate phase)
-  - Workflow phases: Initiate → Analyze → Implementation → Closed
-  - Analyze phase: Document analysis of customer feedback
-  - Implementation phase: Create implementation plan and track progress notes
-  - Closed phase: Document final outcome with automatic closure tracking (closedDate, closedBy)
-  - Grid layout displaying feedback submissions sorted by submission date (newest first)
-  - Each card displays: Customer Name, Feedback (truncated), Current Phase, Submission Date
-  - Detail view with phase-specific forms and data persistence
-  - Phase navigation bar with visual indicators and restricted forward progression
-  - Responsive grid: 1 column on mobile, 2 on large screens, 3 on extra large screens
-  - Feedback accessible via sidebar navigation with MessageSquare icon
-
-### Next Steps
-1. Implement subscription management (CRUD operations)
-2. Build notification/reminder system
-3. Implement escalation workflow for at-risk customers
-4. Add charts and analytics to dashboard
-5. Consider migrating from in-memory to PostgreSQL database for persistence
-
-### User Preferences
+## User Preferences
 - Default theme: Light mode with ABB Red branding
 - Clean, minimal UI without unnecessary mock data
 - Password-protected access required
 
-### Development Notes
-- All sample/mock data has been purged from the application
-- The app uses in-memory storage - data will be lost on server restart
-- To persist data, update storage.ts to use PostgreSQL (infrastructure already in place)
+## System Architecture
+The application is built with a modern web stack, emphasizing a responsive user experience and robust backend functionality.
+
+### UI/UX Decisions
+- **Branding**: Utilizes ABB LTD corporate color scheme (ABB Red #FF000F) in a light mode theme.
+- **Responsiveness**: Mobile-friendly interface with sidebar navigation.
+- **Component Library**: Uses Shadcn UI for consistent and accessible UI components.
+- **Dashboard**: Provides an overview of customer metrics, including total revenue and expired renewals.
+- **Renewal Calendar**: Interactive calendar displaying renewals by month with visual indicators and detailed lists.
+- **Workflow Systems**: Implements multi-phase workflows for "Lessons Learned" and "Feedback" with phase-specific data entry and navigation.
+
+### Technical Implementations
+- **Frontend**: React with TypeScript, Wouter for routing, and TanStack Query for data management.
+- **Backend**: Express.js, providing a RESTful API.
+- **Database**: PostgreSQL, integrated with Drizzle ORM for schema management and queries.
+- **Authentication**: Session-based authentication using Passport.js with a local strategy, bcrypt for password hashing, and all API routes protected.
+- **Customer Management**: Full CRUD operations for customers, including required fields, conditional validation (e.g., Churn Reason), and support for software type filtering.
+- **User Management**: Comprehensive user management system with CRUD operations, username uniqueness validation, self-deletion prevention, and role-based access control (restricted to specific administrators).
+- **Workflow Management**: Implemented structured workflows for "Lessons Learned" (Initiate → Root Cause Analysis → Implementation → Closed) and "Feedback" (Initiate → Analyze → Implementation → Closed) with detailed phase transitions and data persistence.
+
+### Feature Specifications
+- **Authentication System**: Storage-based user authentication with session management.
+- **Customer Management**: Full CRUD for customers, including software filtering, required fields (Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date), and conditional validation (Churn Reason).
+- **Dashboard**: Displays total revenue and tracks expired renewals.
+- **Renewal Calendar**: Interactive month-by-month view of renewals with customer details, currency formatting, and status badges.
+- **Lessons Learned Workflow**: A 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed).
+- **Feedback System**: A form-based submission with a multi-phase workflow (Initiate → Analyze → Implementation → Closed).
+- **User Access Management**: Create, update, delete user credentials with username uniqueness validation, self-deletion prevention, and password show/hide functionality. Access to user management is restricted to authorized users.
+
+## External Dependencies
+- **Database**: PostgreSQL
+- **ORM**: Drizzle ORM
+- **Authentication**: Passport.js (local strategy), bcrypt (password hashing), express-session
+- **UI Framework**: Shadcn UI
+- **Styling**: Tailwind CSS
+- **Date Handling**: react-day-picker, date-fns
+
+## Recent Changes (October 24, 2025)
+
+### Database Migration: In-Memory to PostgreSQL
+- **Migration Completed**: Successfully migrated from in-memory storage (MemStorage) to persistent PostgreSQL database
+- **Files Created**: 
+  - `server/db.ts` - Database connection and Drizzle setup
+  - `server/storage-db.ts` - DatabaseStorage class implementing IStorage interface with Drizzle ORM
+  - `server/migrate-passwords.ts` - One-time password migration script
+- **Files Updated**:
+  - `server/auth.ts` - Added bcrypt password hashing for user initialization and login verification
+  - `server/routes.ts` - Added bcrypt password hashing for user creation and updates
+  - `shared/schema.ts` - Added CASCADE delete constraints to foreign keys
+- **Schema Changes**:
+  - Added `{ onDelete: "cascade" }` to all customer foreign key relationships
+  - subscriptions.customerId → customers.id (CASCADE)
+  - notes.customerId → customers.id (CASCADE)
+  - lessonsLearned.customerId → customers.id (CASCADE)
+- **Security Enhancements**:
+  - Implemented bcrypt password hashing (10 salt rounds) for all user passwords
+  - Migrated 6 existing users from plaintext to hashed passwords
+  - All new user creation and password updates automatically hash passwords
+  - Login authentication uses bcrypt.compare() for secure password verification
+- **Data Persistence**: All customer, user, subscription, note, lesson learned, and feedback data now persists across server restarts
+- **Testing**: Comprehensive end-to-end testing verified:
+  - Hashed password authentication works for all users
+  - CASCADE deletes properly remove related records
+  - User management functions correctly for admins
+  - Calendar and Dashboard reflect real-time database changes
+  - Data persists across navigation and server restarts
