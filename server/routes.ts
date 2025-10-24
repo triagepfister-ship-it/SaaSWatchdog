@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import bcrypt from "bcryptjs";
 import { storage } from "./storage-db";
 import { setupAuth } from "./auth";
 import { insertCustomerSchema, updateCustomerSchema, insertLessonsLearnedSchema, insertFeedbackSchema, insertUserSchema } from "@shared/schema";
@@ -44,7 +45,12 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "Username already exists" });
       }
       
-      const user = await storage.createUser(validatedData);
+      // Hash the password before storing
+      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+      const user = await storage.createUser({
+        username: validatedData.username,
+        password: hashedPassword
+      });
       const { password, ...userWithoutPassword } = user;
       res.status(201).json(userWithoutPassword);
     } catch (error) {
@@ -72,7 +78,13 @@ export function registerRoutes(app: Express): Server {
         }
       }
       
-      const user = await storage.updateUser(req.params.id, validatedData);
+      // Hash password if it's being updated
+      const updateData = { ...validatedData };
+      if (updateData.password) {
+        updateData.password = await bcrypt.hash(updateData.password, 10);
+      }
+      
+      const user = await storage.updateUser(req.params.id, updateData);
       if (!user) return res.sendStatus(404);
       const { password, ...userWithoutPassword } = user;
       res.json(userWithoutPassword);

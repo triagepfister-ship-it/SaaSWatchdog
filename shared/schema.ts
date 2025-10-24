@@ -28,7 +28,7 @@ export const customers = pgTable("customers", {
 
 export const subscriptions = pgTable("subscriptions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  customerId: varchar("customer_id").notNull().references(() => customers.id),
+  customerId: varchar("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
   productName: text("product_name").notNull(),
   renewalDate: timestamp("renewal_date").notNull(),
   value: decimal("value", { precision: 10, scale: 2 }).notNull(),
@@ -38,7 +38,7 @@ export const subscriptions = pgTable("subscriptions", {
 
 export const notes = pgTable("notes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  customerId: varchar("customer_id").notNull().references(() => customers.id),
+  customerId: varchar("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
   content: text("content").notNull(),
   createdBy: text("created_by").notNull(),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
@@ -77,7 +77,7 @@ export const lessonsLearned = pgTable("lessons_learned", {
   title: text("title").notNull(),
   description: text("description"),
   phase: text("phase").notNull().default("Root Cause Analysis"),
-  customerId: varchar("customer_id").references(() => customers.id),
+  customerId: varchar("customer_id").references(() => customers.id, { onDelete: "cascade" }),
   software: text("software"),
   initiatedBy: text("initiated_by").notNull(),
   initiatedDate: timestamp("initiated_date").notNull().default(sql`now()`),

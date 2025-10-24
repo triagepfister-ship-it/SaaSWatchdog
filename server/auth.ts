@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
+import bcrypt from "bcryptjs";
 import { storage } from "./storage-db";
 import { User as SelectUser } from "@shared/schema";
 
@@ -27,7 +28,11 @@ async function initializeUsers() {
   // Only initialize if no users exist
   if (existingUsers.length === 0) {
     for (const user of INITIAL_USERS) {
-      await storage.createUser(user);
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      await storage.createUser({ 
+        username: user.username, 
+        password: hashedPassword 
+      });
     }
   }
 }
@@ -51,9 +56,15 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       const user = await storage.getUserByUsername(username);
-      if (!user || user.password !== password) {
+      if (!user) {
         return done(null, false);
       }
+      
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return done(null, false);
+      }
+      
       return done(null, user);
     }),
   );
