@@ -31,6 +31,19 @@ The application is built with a modern web stack, emphasizing a responsive user 
 ### Feature Specifications
 - **Authentication System**: Storage-based user authentication with session management.
 - **Customer Management**: Full CRUD for customers, including software filtering, required fields (Company, Site, Opportunity Name, Renewal Amount, Renewal Expiration Date), and conditional validation (Churn Reason).
+- **File Attachments**: 
+  - Customers can have optional file attachments (contracts, proposals, etc.)
+  - Supported formats: PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, JPEG
+  - 5MB size limit with comprehensive security validation
+  - Files stored as base64 in PostgreSQL for easier JSON transmission
+  - Frontend provides preview, download, replace, and remove capabilities
+  - **Security Features**:
+    - Server-side validation strips whitespace and validates actual decoded payload size
+    - Data URI reconstructed from scratch to prevent prefix bloat attacks
+    - Pre-decode length validation prevents request bloat
+    - Post-decode size validation enforces 5MB limit
+    - MIME type whitelist enforcement
+    - Normalized base64 storage prevents storage bloat
 - **Dashboard**: 
   - Displays stat cards with total revenue, customer count, expired renewals, and upcoming renewals (with incremental counts for 30/60/90 day periods)
   - **Upcoming Renewals Section**: Lists all future renewals sorted by expiration date (nearest to furthest), with urgency indicators (red text + AlertTriangle icon) for renewals within 30 days

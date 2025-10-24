@@ -114,8 +114,43 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-// Base customer schema for updates (without refinement)
-const baseCustomerSchema = createInsertSchema(customers).omit({ id: true }).extend({
+// Attachment validation constants
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_MIME_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'image/png',
+  'image/jpeg',
+];
+
+// Attachment validation function - validates metadata only
+// Note: Actual payload size validation happens server-side in routes
+const validateAttachment = (data: any) => {
+  if (data.attachmentData) {
+    // Validate MIME type from metadata
+    if (!data.attachmentMimeType || !ALLOWED_MIME_TYPES.includes(data.attachmentMimeType)) {
+      return false;
+    }
+
+    // Ensure all attachment fields are present
+    if (!data.attachmentFilename || !data.attachmentSize) {
+      return false;
+    }
+
+    // Basic sanity check on claimed size
+    if (data.attachmentSize > MAX_FILE_SIZE) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Base customer schema object (without refinements)
+const baseCustomerSchemaObject = createInsertSchema(customers).omit({ id: true }).extend({
   // Required fields
   company: z.string().min(1, "Company is required"),
   site: z.string().min(1, "Site is required"),
@@ -144,23 +179,28 @@ const baseCustomerSchema = createInsertSchema(customers).omit({ id: true }).exte
   attachmentSize: z.number().optional(),
 });
 
-// Insert schema with conditional validation for churn reason
-export const insertCustomerSchema = baseCustomerSchema.refine(
-  (data) => {
-    // If churn is true, churnReason must be provided
-    if (data.churn && (!data.churnReason || data.churnReason.trim() === "")) {
-      return false;
+// Insert schema with all validations
+export const insertCustomerSchema = baseCustomerSchemaObject
+  .refine(validateAttachment, {
+    message: "Invalid attachment: file must be under 5MB and be a PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, or JPEG",
+  })
+  .refine(
+    (data) => {
+      if (data.churn && (!data.churnReason || data.churnReason.trim() === "")) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Churn reason is required when churn is selected",
+      path: ["churnReason"],
     }
-    return true;
-  },
-  {
-    message: "Churn reason is required when churn is selected",
-    path: ["churnReason"],
-  }
-);
+  );
 
-// Update schema for PATCH operations
-export const updateCustomerSchema = baseCustomerSchema.partial();
+// Update schema for PATCH operations - partial with attachment validation
+export const updateCustomerSchema = baseCustomerSchemaObject.partial().refine(validateAttachment, {
+  message: "Invalid attachment: file must be under 5MB and be a PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, or JPEG",
+});
 export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true });
 export const insertNoteSchema = createInsertSchema(notes).omit({ id: true, createdAt: true });
 export const insertLessonsLearnedSchema = createInsertSchema(lessonsLearned).omit({ 

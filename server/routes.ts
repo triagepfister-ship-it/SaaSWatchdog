@@ -5,6 +5,68 @@ import { storage } from "./storage-db";
 import { setupAuth } from "./auth";
 import { insertCustomerSchema, updateCustomerSchema, insertLessonsLearnedSchema, insertFeedbackSchema, insertUserSchema } from "@shared/schema";
 
+// Server-side attachment validation constants
+const MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_ATTACHMENT_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'image/png',
+  'image/jpeg',
+];
+
+// Validate and normalize attachment payload
+function validateAndNormalizeAttachment(attachmentData?: string, attachmentMimeType?: string): { 
+  valid: boolean; 
+  error?: string; 
+  normalizedData?: string;
+} {
+  if (!attachmentData) {
+    return { valid: true }; // No attachment is valid
+  }
+
+  // Validate MIME type first
+  if (!attachmentMimeType || !ALLOWED_ATTACHMENT_TYPES.includes(attachmentMimeType)) {
+    return { valid: false, error: "Invalid file type. Only PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, and JPEG files are allowed." };
+  }
+
+  try {
+    // Extract base64 portion (after comma if data URI, entire string otherwise)
+    const base64Data = attachmentData.includes(',') ? attachmentData.split(',')[1] : attachmentData;
+    
+    // Remove all whitespace from base64 (security: prevent padding attacks)
+    const cleanBase64 = base64Data.replace(/\s/g, '');
+    
+    // Validate sanitized base64 length BEFORE decoding (prevent oversized requests)
+    // Maximum theoretical base64 length for 5MB: ceil(5_242_880 / 3) * 4 ≈ 6,990,508 chars
+    const MAX_BASE64_LENGTH = Math.ceil((MAX_ATTACHMENT_SIZE / 3) * 4) + 1000; // +1000 for padding
+    if (cleanBase64.length > MAX_BASE64_LENGTH) {
+      return { valid: false, error: "Attachment data exceeds maximum allowed size." };
+    }
+    
+    // Decode base64 to actual bytes
+    const buffer = Buffer.from(cleanBase64, 'base64');
+    
+    // Validate actual decoded payload size
+    if (buffer.length > MAX_ATTACHMENT_SIZE) {
+      return { valid: false, error: "File size exceeds 5MB limit." };
+    }
+
+    // Re-encode to get normalized base64 (prevents storage bloat)
+    const normalizedBase64 = buffer.toString('base64');
+    
+    // Reconstruct data URI from scratch using validated MIME type (security: prevent prefix bloat)
+    const normalizedData = `data:${attachmentMimeType};base64,${normalizedBase64}`;
+
+    return { valid: true, normalizedData };
+  } catch (error) {
+    return { valid: false, error: "Invalid attachment data." };
+  }
+}
+
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
 
@@ -129,6 +191,21 @@ export function registerRoutes(app: Express): Server {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     try {
       const validatedData = insertCustomerSchema.parse(req.body);
+      
+      // Validate and normalize attachment payload server-side
+      const attachmentValidation = validateAndNormalizeAttachment(
+        validatedData.attachmentData, 
+        validatedData.attachmentMimeType
+      );
+      if (!attachmentValidation.valid) {
+        return res.status(400).json({ error: attachmentValidation.error });
+      }
+      
+      // Use normalized attachment data to prevent storage bloat
+      if (attachmentValidation.normalizedData) {
+        validatedData.attachmentData = attachmentValidation.normalizedData;
+      }
+      
       const customer = await storage.createCustomer(validatedData);
       res.status(201).json(customer);
     } catch (error) {
@@ -140,6 +217,21 @@ export function registerRoutes(app: Express): Server {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     try {
       const validatedData = updateCustomerSchema.parse(req.body);
+      
+      // Validate and normalize attachment payload server-side
+      const attachmentValidation = validateAndNormalizeAttachment(
+        validatedData.attachmentData, 
+        validatedData.attachmentMimeType
+      );
+      if (!attachmentValidation.valid) {
+        return res.status(400).json({ error: attachmentValidation.error });
+      }
+      
+      // Use normalized attachment data to prevent storage bloat
+      if (attachmentValidation.normalizedData) {
+        validatedData.attachmentData = attachmentValidation.normalizedData;
+      }
+      
       const customer = await storage.updateCustomer(req.params.id, validatedData);
       if (!customer) return res.sendStatus(404);
       res.json(customer);

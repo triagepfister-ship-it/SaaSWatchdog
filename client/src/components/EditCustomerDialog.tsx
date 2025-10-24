@@ -66,6 +66,40 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (5MB max)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      toast({
+        title: "File too large",
+        description: "Attachment must be under 5MB",
+        variant: "destructive",
+      });
+      e.target.value = ""; // Reset file input
+      return;
+    }
+
+    // Validate MIME type
+    const ALLOWED_MIME_TYPES = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'text/plain',
+      'image/png',
+      'image/jpeg',
+    ];
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Only PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, and JPEG files are allowed",
+        variant: "destructive",
+      });
+      e.target.value = ""; // Reset file input
+      return;
+    }
+
     // Read file and convert to base64
     const reader = new FileReader();
     reader.onloadend = () => {
