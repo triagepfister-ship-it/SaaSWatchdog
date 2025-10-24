@@ -282,7 +282,12 @@ function FeedbackDetailView({ feedback, onBack }: { feedback: Feedback; onBack: 
       return;
     }
 
-    if (activePhase === "Analyze" && newPhase === "Implementation") {
+    if (activePhase === "Initiate" && newPhase === "Analyze") {
+      updateMutation.mutate({
+        phase: "Analyze",
+      });
+      setActivePhase("Analyze");
+    } else if (activePhase === "Analyze" && newPhase === "Implementation") {
       if (!phaseData.analysis.trim()) {
         toast({
           title: "Analysis Required",
