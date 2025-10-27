@@ -48,7 +48,8 @@ The application is built with a modern web stack, emphasizing a responsive user 
   - Displays stat cards with total revenue, customer count, expired renewals, and upcoming renewals (with incremental counts for 30/60/90 day periods)
   - **Upcoming Renewals Section**: Lists all future renewals sorted by expiration date (nearest to furthest), with urgency indicators (red text + AlertTriangle icon) for renewals within 30 days
   - **Expired Renewals Section**: Lists all expired renewals sorted newest to oldest (most recently expired first), with red text and AlertTriangle icon for all entries
-  - Both sections display customer name, company, software badge, pilot badge, renewal amount, expiration date, and feedback launch button
+  - Both sections display customer name, company, software badge, pilot badge, renewal amount, expiration date, feedback launch button, and edit button
+  - **Quick Edit Feature**: Each customer pane includes an Edit button below the Feedback button, allowing users to quickly open the EditCustomerDialog and modify customer information directly from the Dashboard
 - **Renewal Calendar**: Interactive month-by-month view of renewals with customer details, currency formatting, and status badges.
 - **Lessons Learned Workflow**: A 4-phase workflow system (Initiate → Root Cause Analysis → Implementation → Closed).
 - **Feedback System**: A form-based submission with a multi-phase workflow (Initiate → Analyze → Implementation → Closed). Can be launched from Dashboard with customer info pre-filled and auto-focus on feedback text area.

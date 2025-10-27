@@ -2,8 +2,10 @@ import { useState } from "react";
 import { StatCard } from "@/components/StatCard";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 import { CreateFeedbackDialog } from "@/components/CreateFeedbackDialog";
-import { AlertCircle, Users, DollarSign, RefreshCw, Flag, Calendar, AlertTriangle } from "lucide-react";
+import { EditCustomerDialog } from "@/components/EditCustomerDialog";
+import { AlertCircle, Users, DollarSign, RefreshCw, Flag, Calendar, AlertTriangle, Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Customer, SOFTWARE_TYPES } from "@shared/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,6 +15,8 @@ import { format } from "date-fns";
 
 export default function Dashboard() {
   const [selectedSoftware, setSelectedSoftware] = useState<string>("all");
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   
   const { data: customers = [] } = useQuery<Customer[]>({
     queryKey: ["/api/customers"],
@@ -228,11 +232,23 @@ export default function Dashboard() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex-shrink-0">
+                      <div className="flex flex-col gap-1.5 flex-shrink-0">
                         <CreateFeedbackDialog 
                           customerName={customer.name}
                           software={customer.software}
                         />
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            setEditingCustomer(customer);
+                            setEditDialogOpen(true);
+                          }}
+                          data-testid={`button-edit-upcoming-${customer.id}`}
+                        >
+                          <Pencil className="w-3.5 h-3.5 mr-1.5" />
+                          Edit
+                        </Button>
                       </div>
                     </div>
                   );
@@ -320,11 +336,23 @@ export default function Dashboard() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex-shrink-0">
+                      <div className="flex flex-col gap-1.5 flex-shrink-0">
                         <CreateFeedbackDialog 
                           customerName={customer.name}
                           software={customer.software}
                         />
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => {
+                            setEditingCustomer(customer);
+                            setEditDialogOpen(true);
+                          }}
+                          data-testid={`button-edit-expired-${customer.id}`}
+                        >
+                          <Pencil className="w-3.5 h-3.5 mr-1.5" />
+                          Edit
+                        </Button>
                       </div>
                     </div>
                   );
@@ -334,6 +362,19 @@ export default function Dashboard() {
           })()}
         </CardContent>
       </Card>
+
+      {editingCustomer && (
+        <EditCustomerDialog 
+          customer={editingCustomer}
+          open={editDialogOpen}
+          onOpenChange={(open) => {
+            setEditDialogOpen(open);
+            if (!open) {
+              setEditingCustomer(null);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
